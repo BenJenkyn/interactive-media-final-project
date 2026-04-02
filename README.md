@@ -8,6 +8,4 @@ https://maaot.itch.io/mossy-cavern
 
 https://anokolisa.itch.io/sidescroller-pixelart-sprites-asset-pack-forest-16x16
 
-https://corwin-zx.itch.io/the-pale-moonlight
-
 https://ansimuz.itch.io/gothicvania-patreon-collection
