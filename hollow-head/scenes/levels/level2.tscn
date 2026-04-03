@@ -159,7 +159,7 @@ physics_layer_0/collision_layer = 255
 sources/0 = SubResource("TileSetAtlasSource_niitk")
 sources/1 = SubResource("TileSetAtlasSource_d5djh")
 
-[node name="Level1" type="Control"]
+[node name="Level2" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
