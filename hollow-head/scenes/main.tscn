@@ -1,7 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cyikalf080y8p"]
+[gd_scene load_steps=8 format=3 uid="uid://cyikalf080y8p"]
 
 [ext_resource type="PackedScene" uid="uid://e7ihj1pv4fmu" path="res://scenes/player/Player.tscn" id="1_o5qli"]
 [ext_resource type="PackedScene" uid="uid://dgtrng7x87fd3" path="res://scenes/player/enemy.tscn" id="2_0wfyh"]
+[ext_resource type="Texture2D" uid="uid://dueottrvc7p63" path="res://assets/background/1 Gothicvania Swamp files/Evironment/background.png" id="3_sugp2"]
+[ext_resource type="Texture2D" uid="uid://berk0bpqirnec" path="res://assets/background/1 Gothicvania Swamp files/Evironment/mid-layer-01.png" id="4_tbgi4"]
+[ext_resource type="Texture2D" uid="uid://css0pw6xufjd5" path="res://assets/background/1 Gothicvania Swamp files/Evironment/mid-layer-02.png" id="5_tefeu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
 
@@ -16,6 +19,7 @@ collision_layer = 16
 collision_mask = 11
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0.55, 1)
 shape = SubResource("RectangleShape2D_sgp6g")
 
 [node name="CharacterBody2D" parent="." instance=ExtResource("1_o5qli")]
@@ -31,3 +35,33 @@ shape = SubResource("RectangleShape2D_o5qli")
 
 [node name="Enemy" parent="." instance=ExtResource("2_0wfyh")]
 position = Vector2(487, 37)
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Background1" type="TextureRect" parent="Background"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_sugp2")
+stretch_mode = 1
+
+[node name="Background2" type="TextureRect" parent="Background"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_tbgi4")
+
+[node name="Background3" type="TextureRect" parent="Background"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_right = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_tefeu")
