@@ -1,0 +1,204 @@
+[gd_scene load_steps=34 format=3 uid="uid://e7ihj1pv4fmu"]
+
+[ext_resource type="Script" uid="uid://d2rn5lf0d63b4" path="res://scripts/player.gd" id="1_wr5hl"]
+[ext_resource type="PackedScene" uid="uid://beh23fx68qeu8" path="res://scenes/player/projectile.tscn" id="2_5ttev"]
+[ext_resource type="Texture2D" uid="uid://cpxh13rrbv2qn" path="res://assets/characters/1 Terrible Knight/Sprites/SwordSlash/frame1.png" id="2_76i7i"]
+[ext_resource type="Texture2D" uid="uid://dmfyyps1jflty" path="res://assets/characters/1 Terrible Knight/Sprites/Idle/frame1.png" id="2_tpg5x"]
+[ext_resource type="Texture2D" uid="uid://dsbneefqytqgk" path="res://assets/characters/1 Terrible Knight/Sprites/Idle/frame2.png" id="3_c3xxp"]
+[ext_resource type="Texture2D" uid="uid://crurvnmblitu3" path="res://assets/characters/1 Terrible Knight/Sprites/SwordSlash/frame2.png" id="3_mndc6"]
+[ext_resource type="Texture2D" uid="uid://otqisyyacayo" path="res://assets/characters/1 Terrible Knight/Sprites/SwordSlash/frame3.png" id="4_1hh02"]
+[ext_resource type="Texture2D" uid="uid://cx4nnj5v8ahmv" path="res://assets/characters/1 Terrible Knight/Sprites/Idle/frame3.png" id="4_npwbq"]
+[ext_resource type="Texture2D" uid="uid://kluemapijtm6" path="res://assets/characters/1 Terrible Knight/Sprites/SwordSlash/frame4.png" id="5_5ttev"]
+[ext_resource type="Texture2D" uid="uid://dfi0bvfxhhn2w" path="res://assets/characters/1 Terrible Knight/Sprites/Idle/frame4.png" id="5_v42im"]
+[ext_resource type="Texture2D" uid="uid://we4a4c4wvxca" path="res://assets/characters/1 Terrible Knight/Sprites/SwordSlash/frame5.png" id="6_geaob"]
+[ext_resource type="Texture2D" uid="uid://emv5i1pvmiyx" path="res://assets/characters/1 Terrible Knight/Sprites/SwordSlash/frame6.png" id="7_qsmrd"]
+[ext_resource type="Texture2D" uid="uid://dmo5hxqx2goh5" path="res://assets/characters/1 Terrible Knight/Sprites/Jump/Jump1.png" id="8_x3qp0"]
+[ext_resource type="Texture2D" uid="uid://eoaxcej5l3mj" path="res://assets/characters/1 Terrible Knight/Sprites/Jump/Jump2.png" id="9_76i7i"]
+[ext_resource type="Texture2D" uid="uid://d1b58s4a1kqs7" path="res://assets/characters/1 Terrible Knight/Sprites/Jump/Jump3.png" id="10_mndc6"]
+[ext_resource type="Texture2D" uid="uid://bjo72n6n32x8g" path="res://assets/characters/1 Terrible Knight/Sprites/Jump/Jump4.png" id="11_1hh02"]
+[ext_resource type="Texture2D" uid="uid://cf37nci1do0mx" path="res://assets/characters/1 Terrible Knight/Sprites/Run/frame1.png" id="12_5ttev"]
+[ext_resource type="Texture2D" uid="uid://cgj2mtaiu3382" path="res://assets/characters/1 Terrible Knight/Sprites/Run/frame2.png" id="13_geaob"]
+[ext_resource type="Texture2D" uid="uid://b4ia1h6hndgre" path="res://assets/characters/1 Terrible Knight/Sprites/Run/frame3.png" id="14_qsmrd"]
+[ext_resource type="Texture2D" uid="uid://nwvo2nnmrdlf" path="res://assets/characters/1 Terrible Knight/Sprites/Run/frame4.png" id="15_jtlb7"]
+[ext_resource type="Texture2D" uid="uid://1udtdi4ccqvg" path="res://assets/characters/1 Terrible Knight/Sprites/Run/frame5.png" id="16_ye1dr"]
+[ext_resource type="Texture2D" uid="uid://c1ojjlk2lioxm" path="res://assets/characters/1 Terrible Knight/Sprites/Run/frame6.png" id="17_bvphr"]
+[ext_resource type="Texture2D" uid="uid://cwslw2updy3h4" path="res://assets/characters/1 Terrible Knight/Sprites/Run/frame7.png" id="18_05p8n"]
+[ext_resource type="Texture2D" uid="uid://x30o008qvnp8" path="res://assets/characters/1 Terrible Knight/Sprites/Run/frame8.png" id="19_eac1a"]
+[ext_resource type="Texture2D" uid="uid://cnsnuhxldt5h4" path="res://assets/characters/1 Terrible Knight/Sprites/Run/frame9.png" id="20_ijyjs"]
+[ext_resource type="Texture2D" uid="uid://bkadrhm6ywas4" path="res://assets/characters/1 Terrible Knight/Sprites/Run/frame10.png" id="21_a4b0l"]
+[ext_resource type="Texture2D" uid="uid://dl3ya38ndjils" path="res://assets/characters/1 Terrible Knight/Sprites/Run/frame11.png" id="22_u3hyo"]
+[ext_resource type="Texture2D" uid="uid://b4x7g0ujjbm7b" path="res://assets/characters/1 Terrible Knight/Sprites/Run/frame12.png" id="23_pysui"]
+[ext_resource type="Texture2D" uid="uid://bg2cdnbg3qf34" path="res://assets/characters/1 Terrible Knight/Sprites/AttackSide/attackside-export1.png" id="28_1hh02"]
+[ext_resource type="Texture2D" uid="uid://cj1qqsbtqskqh" path="res://assets/characters/1 Terrible Knight/Sprites/AttackSide/attackside-export2.png" id="29_5ttev"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_pn6s4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_76i7i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_mndc6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_1hh02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_5ttev")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_geaob")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_qsmrd")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_1hh02")
+}],
+"loop": false,
+"name": &"fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_tpg5x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_c3xxp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_npwbq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_v42im")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_x3qp0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_76i7i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_mndc6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_1hh02")
+}],
+"loop": false,
+"name": &"jump",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_5ttev")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_geaob")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_qsmrd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_jtlb7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_ye1dr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_05p8n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_eac1a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_ijyjs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_bvphr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_a4b0l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_u3hyo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_pysui")
+}],
+"loop": true,
+"name": &"run",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_1hh02")
+}],
+"loop": true,
+"name": &"test",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("28_1hh02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_5ttev")
+}],
+"loop": false,
+"name": &"throw",
+"speed": 10.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gfjak"]
+radius = 11.0
+height = 35.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_76i7i"]
+size = Vector2(33, 15)
+
+[node name="Player" type="CharacterBody2D"]
+collision_mask = 18
+script = ExtResource("1_wr5hl")
+projectile_scene = ExtResource("2_5ttev")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-2, -31)
+sprite_frames = SubResource("SpriteFrames_pn6s4")
+animation = &"throw"
+frame = 1
+frame_progress = 1.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_gfjak")
+
+[node name="DashTImer" type="Timer" parent="."]
+wait_time = 0.15
+one_shot = true
+
+[node name="AttackTimer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
+[node name="AttackArea" type="Area2D" parent="."]
+position = Vector2(29.5, -3)
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+shape = SubResource("RectangleShape2D_76i7i")
+
+[node name="ProjectileSpawn" type="Marker2D" parent="."]
+position = Vector2(13, -10)
+
+[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
+[connection signal="frame_changed" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_frame_changed"]
