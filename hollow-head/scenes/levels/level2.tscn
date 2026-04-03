@@ -160,6 +160,7 @@ sources/0 = SubResource("TileSetAtlasSource_niitk")
 sources/1 = SubResource("TileSetAtlasSource_d5djh")
 
 [node name="Level2" type="Control"]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -167,6 +168,7 @@ offset_bottom = 40.0
 
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1
+visible = false
 
 [node name="TextureRect" type="TextureRect" parent="Background"]
 anchors_preset = 15
