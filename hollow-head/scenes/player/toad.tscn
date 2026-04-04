@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=3 uid="uid://dgtrng7x87fd3"]
 
 [ext_resource type="Texture2D" uid="uid://r1gi3i706yv5" path="res://assets/enemies/1 mutant-toad/Sprites/attack/mutant-toad-attack1.png" id="1_eqe02"]
-[ext_resource type="Script" uid="uid://dlyuf8wd3olwr" path="res://scripts/enemy.gd" id="1_ke71q"]
+[ext_resource type="Script" uid="uid://dlyuf8wd3olwr" path="res://scripts/toad.gd" id="1_ke71q"]
 [ext_resource type="Texture2D" uid="uid://2e7fpvr6a0ty" path="res://assets/enemies/1 mutant-toad/Sprites/attack/mutant-toad-attack2.png" id="2_ke71q"]
 [ext_resource type="Texture2D" uid="uid://cg5qvpuqfdmm4" path="res://assets/enemies/1 mutant-toad/Sprites/attack/mutant-toad-attack3.png" id="3_msvjk"]
 [ext_resource type="Texture2D" uid="uid://ctf1i2ndieipg" path="res://assets/enemies/1 mutant-toad/Sprites/idle/mutant-toad-idle1.png" id="4_47qhd"]

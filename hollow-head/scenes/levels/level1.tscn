@@ -1,5 +1,6 @@
-[gd_scene load_steps=12 format=4 uid="uid://dvnpmmhtngo22"]
+[gd_scene load_steps=13 format=4 uid="uid://dvnpmmhtngo22"]
 
+[ext_resource type="PackedScene" uid="uid://dgtrng7x87fd3" path="res://scenes/player/toad.tscn" id="1_2r1tl"]
 [ext_resource type="Texture2D" uid="uid://dueottrvc7p63" path="res://assets/background/1 Gothicvania Swamp files/Evironment/background.png" id="1_dd0lh"]
 [ext_resource type="Texture2D" uid="uid://berk0bpqirnec" path="res://assets/background/1 Gothicvania Swamp files/Evironment/mid-layer-01.png" id="2_bfxgj"]
 [ext_resource type="Texture2D" uid="uid://css0pw6xufjd5" path="res://assets/background/1 Gothicvania Swamp files/Evironment/mid-layer-02.png" id="3_dywbp"]
@@ -422,6 +423,8 @@ sources/0 = SubResource("TileSetAtlasSource_bfxgj")
 sources/2 = SubResource("TileSetAtlasSource_1seuy")
 
 [node name="Level1" type="Node2D"]
+
+[node name="Enemy" parent="." instance=ExtResource("1_2r1tl")]
 
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1
