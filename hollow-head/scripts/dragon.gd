@@ -22,6 +22,8 @@ enum State {
 @export var big_hitbox_start_frame: int = 7
 @export var big_hitbox_end_frame: int = 14
 @export var waypoint_radius: float = 80.0
+@export var big_attack_dash_speed: float = 400.0
+@export var big_attack_dash_start_frame: int = 3
 
 @onready var idle_sprite: AnimatedSprite2D = $Idle
 @onready var attack_sprite: AnimatedSprite2D = $Attack
@@ -41,6 +43,7 @@ var change_direction_timer: float = 0.0
 var attack_timer: float = 0.0
 var health: int = 3
 var assigned_waypoint: Node2D = null
+var dash_velocity: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	randomize()
@@ -54,7 +57,8 @@ func _physics_process(delta: float) -> void:
 		State.IDLE:
 			_process_idle(delta)
 		State.NORMAL_ATTACK, State.BIG_ATTACK:
-			velocity = Vector2.ZERO
+			velocity = dash_velocity
+			velocity.y = 0.0
 			_update_attack_boxes_and_flame()
 
 	move_and_slide()
@@ -81,11 +85,13 @@ func _change_state(new_state: State) -> void:
 		State.NORMAL_ATTACK:
 			attack_sprite.stop()
 			_assign_nearest_waypoint()
+			update_facing()
 		State.BIG_ATTACK:
 			big_attack_sprite.stop()
 			flame_sprite.visible = false
 			flame_sprite.stop()
 			_assign_nearest_waypoint()
+			update_facing()
 
 	state = new_state
 
@@ -107,17 +113,24 @@ func _change_state(new_state: State) -> void:
 			idle_sprite.play("idle")
 			reset_attack_timer()
 			reset_direction_timer()
-			update_facing()
 
 		State.NORMAL_ATTACK:
 			attack_sprite.visible = true
 			attack_sprite.play("attack")
 			attack_sprite.frame = 0
+			var center := get_viewport_rect().size / 2
+			var to_center := (center - global_position).normalized()
+			dash_velocity = Vector2(to_center.x, 0) * big_attack_dash_speed
+			move_direction = to_center
 
 		State.BIG_ATTACK:
 			big_attack_sprite.visible = true
 			big_attack_sprite.play("attack")
 			big_attack_sprite.frame = 0
+			var center := get_viewport_rect().size / 2
+			var to_center := (center - global_position).normalized()
+			dash_velocity = Vector2(to_center.x, 0) * big_attack_dash_speed
+			move_direction = to_center
 
 		State.DEAD:
 			_set_hitbox(hurtbox, hurtbox_shape, false)
@@ -132,7 +145,6 @@ func _process_idle(delta: float) -> void:
 	if change_direction_timer <= 0.0:
 		pick_new_direction()
 		reset_direction_timer()
-		update_facing()
 
 	if attack_timer <= 0.0:
 		var next := State.NORMAL_ATTACK if randf() <= normal_attack_chance else State.BIG_ATTACK
@@ -146,12 +158,10 @@ func _process_idle(delta: float) -> void:
 		if to_waypoint.length() > waypoint_radius:
 			move_direction = to_waypoint.normalized()
 			reset_direction_timer()
-			update_facing()
 
 	if is_on_wall():
 		move_direction = move_direction.bounce(get_wall_normal()).normalized()
 		reset_direction_timer()
-		update_facing()
 
 # ── Attack box / flame logic ───────────────────────────────────
 
@@ -192,7 +202,6 @@ func _enforce_bounds() -> void:
 			move_direction = move_direction.normalized()
 		if state == State.IDLE:
 			reset_direction_timer()
-			update_facing()
 
 func _set_hitbox(box: Area2D, shape: CollisionShape2D, active: bool) -> void:
 	box.monitoring = active
@@ -216,7 +225,7 @@ func reset_attack_timer() -> void:
 	attack_timer = randf_range(attack_time_min, attack_time_max)
 
 func update_facing() -> void:
-	scale.x = -1 if move_direction.x < 0.0 else 1
+	scale.x = -scale.x
 
 func take_damage(amount: int) -> void:
 	health -= amount
