@@ -165,7 +165,7 @@ sources/1 = SubResource("TileSetAtlasSource_d5djh")
 [node name="Level2" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_d5djh")]
-position = Vector2(796, 449)
+position = Vector2(116, 483)
 
 [node name="Hud" parent="." instance=ExtResource("1_niitk")]
 
