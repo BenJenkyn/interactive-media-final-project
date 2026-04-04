@@ -9,5 +9,5 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("select"):
-		level_state.change_state(level_state.LevelStateEnum.LEVEL1)
+		level_state.change_state(level_state.LevelStateEnum.LEVEL3)
 	pass
