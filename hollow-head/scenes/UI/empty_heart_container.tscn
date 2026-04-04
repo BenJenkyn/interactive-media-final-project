@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://66mrdm6pr1fj"]
+
+[ext_resource type="Texture2D" uid="uid://d3nrnydptirbm" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/misc/Gem/Sprites/gem-empty.png" id="1_2joln"]
+
+[node name="EmptyHeartContainer" type="TextureRect"]
+texture = ExtResource("1_2joln")

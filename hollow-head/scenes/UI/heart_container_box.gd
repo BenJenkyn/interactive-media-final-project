@@ -1,0 +1,21 @@
+extends HBoxContainer
+
+var full_heart_container = preload("res://scenes/UI/full_heart_container.tscn")
+var empty_heart_container = preload("res://scenes/UI/empty_heart_container.tscn")
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	load_hearts()
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+func load_hearts():
+	for child in get_children():
+		child.queue_free()
+
+	for i in range(player_state.max_health):
+		var heart = full_heart_container.instantiate() if i < player_state.current_health else empty_heart_container.instantiate()
+		add_child(heart)

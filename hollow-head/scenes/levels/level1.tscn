@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=4 uid="uid://dvnpmmhtngo22"]
+[gd_scene load_steps=12 format=4 uid="uid://dvnpmmhtngo22"]
 
 [ext_resource type="Texture2D" uid="uid://dueottrvc7p63" path="res://assets/background/1 Gothicvania Swamp files/Evironment/background.png" id="1_dd0lh"]
 [ext_resource type="Texture2D" uid="uid://berk0bpqirnec" path="res://assets/background/1 Gothicvania Swamp files/Evironment/mid-layer-01.png" id="2_bfxgj"]
 [ext_resource type="Texture2D" uid="uid://css0pw6xufjd5" path="res://assets/background/1 Gothicvania Swamp files/Evironment/mid-layer-02.png" id="3_dywbp"]
 [ext_resource type="Texture2D" uid="uid://dskg0csw8thfh" path="res://assets/background/1 Gothicvania Swamp files/Evironment/tileset.png" id="4_bfxgj"]
 [ext_resource type="Texture2D" uid="uid://c2d6bvm0egjlh" path="res://assets/background/1 Gothicvania Swamp files/Evironment/trees.png" id="5_dywbp"]
+[ext_resource type="PackedScene" uid="uid://blyuyu0w5k02s" path="res://scenes/UI/hud.tscn" id="6_1seuy"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dywbp"]
 texture = ExtResource("4_bfxgj")
@@ -463,3 +464,5 @@ tile_set = SubResource("TileSet_1seuy")
 [node name="Foliage" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAAFACQAAAABAAUAAAAFACUAAAABAAYAAAAGACMAAAACAAQAAAAGACQAAAACAAUAAAAGACUAAAACAAYAAAAHACMAAAADAAQAAAAHACQAAAADAAUAAAAHACUAAAADAAYAAAAIACMAAAAEAAQAAAAxACQAAAABAAUAAAAxACUAAAABAAYAAAAyACMAAAACAAQAAAAyACQAAAACAAUAAAAyACUAAAACAAYAAAAzACMAAAADAAQAAAAzACQAAAADAAUAAAAzACUAAAADAAYAAAA0ACMAAAAEAAQAAAA9ACQAAAABAAUAAAA9ACUAAAABAAYAAAA+ACMAAAACAAQAAAA+ACQAAAACAAUAAAA+ACUAAAACAAYAAAA/ACMAAAADAAQAAAA/ACQAAAADAAUAAAA/ACUAAAADAAYAAABAACMAAAAEAAQAAAAQACQAAAAFAAUAAAAQACUAAAAFAAYAAAARACQAAAAGAAUAAAARACUAAAAGAAYAAAASACQAAAAHAAUAAAASACUAAAAHAAYAAAATACQAAAAIAAUAAAATACUAAAAIAAYAAAA=")
 tile_set = SubResource("TileSet_dywbp")
+
+[node name="Hud" parent="." instance=ExtResource("6_1seuy")]

@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://blyuyu0w5k02s"]
+
+[ext_resource type="Script" uid="uid://cgm676vxsoexk" path="res://scenes/UI/heart_container_box.gd" id="1_c4vmg"]
+
+[node name="Hud" type="CanvasLayer"]
+
+[node name="HeartContainerBox" type="HBoxContainer" parent="."]
+z_index = 2
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 16.0
+grow_horizontal = 2
+script = ExtResource("1_c4vmg")
