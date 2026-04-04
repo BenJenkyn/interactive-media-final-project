@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=4 uid="uid://bnp5hdl017exq"]
+[gd_scene load_steps=6 format=4 uid="uid://bnp5hdl017exq"]
 
 [ext_resource type="Texture2D" uid="uid://c1vatbrikw0fs" path="res://assets/background/1 lava-background/PNG/lava-background-preview.png" id="1_s1j21"]
+[ext_resource type="PackedScene" uid="uid://blyuyu0w5k02s" path="res://scenes/UI/hud.tscn" id="1_sru4k"]
 [ext_resource type="Texture2D" uid="uid://chsxmc4t0va46" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/environment/layers/tileset.png" id="3_f5jb5"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sru4k"]
@@ -53,6 +54,8 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="Hud" parent="." instance=ExtResource("1_sru4k")]
 
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1
