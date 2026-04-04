@@ -5,10 +5,6 @@
 [ext_resource type="PackedScene" uid="uid://bua4m2f24p1p7" path="res://scenes/player/spawn_effect.tscn" id="2_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://i8ted54dl21m" path="res://scenes/player/beast.tscn" id="3_jyhfs"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_o5qli"]
-
 [node name="Main" type="Node2D"]
 script = ExtResource("1_sugp2")
 spawn_effect_scene = ExtResource("2_jyhfs")
