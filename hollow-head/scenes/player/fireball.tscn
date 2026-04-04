@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://cv6es3hixawa3"]
+
+[ext_resource type="Texture2D" uid="uid://mw07mnkka864" path="res://assets/enemies/1 Hell-Beast-Files/Fireball/Sprites/frame1.png" id="1_ki5xy"]
+[ext_resource type="Script" uid="uid://cev51x0jn4dqg" path="res://scripts/fireball.gd" id="1_wu6t6"]
+[ext_resource type="Texture2D" uid="uid://cpdhixeuxwhkj" path="res://assets/enemies/1 Hell-Beast-Files/Fireball/Sprites/frame2.png" id="2_wu6t6"]
+[ext_resource type="Texture2D" uid="uid://cw72cw61qm3tg" path="res://assets/enemies/1 Hell-Beast-Files/Fireball/Sprites/frame3.png" id="3_q3k02"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fyjsl"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ki5xy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_wu6t6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_q3k02")
+}],
+"loop": true,
+"name": &"fireball",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_plp8d"]
+radius = 4.0
+height = 12.0
+
+[node name="fireball" type="Area2D"]
+collision_layer = 32
+collision_mask = 17
+script = ExtResource("1_wu6t6")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_fyjsl")
+animation = &"fireball"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-2, 0)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_plp8d")

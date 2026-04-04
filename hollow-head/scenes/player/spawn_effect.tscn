@@ -1,0 +1,64 @@
+[gd_scene load_steps=10 format=3 uid="uid://bua4m2f24p1p7"]
+
+[ext_resource type="Script" uid="uid://ney2sknp3e7x" path="res://scripts/spawn_effect.gd" id="1_netid"]
+[ext_resource type="Texture2D" uid="uid://b4d6nvaq1jcme" path="res://assets/enemies/1 Hell-Beast-Files/Burn/Spritesheet.png" id="2_76nr4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_agh72"]
+atlas = ExtResource("2_76nr4")
+region = Rect2(370, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ik47c"]
+atlas = ExtResource("2_76nr4")
+region = Rect2(296, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cha3g"]
+atlas = ExtResource("2_76nr4")
+region = Rect2(222, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r87ik"]
+atlas = ExtResource("2_76nr4")
+region = Rect2(148, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ojd7f"]
+atlas = ExtResource("2_76nr4")
+region = Rect2(74, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2aams"]
+atlas = ExtResource("2_76nr4")
+region = Rect2(0, 0, 74, 160)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_76nr4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_agh72")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ik47c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cha3g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r87ik")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ojd7f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2aams")
+}],
+"loop": false,
+"name": &"spawn",
+"speed": 6.0
+}]
+
+[node name="SpawnEffect" type="Node2D"]
+script = ExtResource("1_netid")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-3, -53)
+sprite_frames = SubResource("SpriteFrames_76nr4")
+animation = &"spawn"
+frame = 5
+frame_progress = 1.0
