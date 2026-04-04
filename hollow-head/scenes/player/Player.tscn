@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://e7ihj1pv4fmu"]
+[gd_scene load_steps=36 format=3 uid="uid://e7ihj1pv4fmu"]
 
 [ext_resource type="Script" uid="uid://d2rn5lf0d63b4" path="res://scripts/player.gd" id="1_wr5hl"]
 [ext_resource type="PackedScene" uid="uid://beh23fx68qeu8" path="res://scenes/player/projectile.tscn" id="2_5ttev"]
@@ -14,6 +14,8 @@
 [ext_resource type="Texture2D" uid="uid://emv5i1pvmiyx" path="res://assets/characters/1 Terrible Knight/Sprites/SwordSlash/frame6.png" id="7_qsmrd"]
 [ext_resource type="Texture2D" uid="uid://dmo5hxqx2goh5" path="res://assets/characters/1 Terrible Knight/Sprites/Jump/Jump1.png" id="8_x3qp0"]
 [ext_resource type="Texture2D" uid="uid://eoaxcej5l3mj" path="res://assets/characters/1 Terrible Knight/Sprites/Jump/Jump2.png" id="9_76i7i"]
+[ext_resource type="Texture2D" uid="uid://2x7324pqkk6g" path="res://assets/characters/1 Terrible Knight/Sprites/Crouch/frame1.png" id="9_qsmrd"]
+[ext_resource type="Texture2D" uid="uid://b2t5i7j2itjfs" path="res://assets/characters/1 Terrible Knight/Sprites/Crouch/frame2.png" id="10_jtlb7"]
 [ext_resource type="Texture2D" uid="uid://d1b58s4a1kqs7" path="res://assets/characters/1 Terrible Knight/Sprites/Jump/Jump3.png" id="10_mndc6"]
 [ext_resource type="Texture2D" uid="uid://bjo72n6n32x8g" path="res://assets/characters/1 Terrible Knight/Sprites/Jump/Jump4.png" id="11_1hh02"]
 [ext_resource type="Texture2D" uid="uid://cf37nci1do0mx" path="res://assets/characters/1 Terrible Knight/Sprites/Run/frame1.png" id="12_5ttev"]
@@ -55,6 +57,17 @@ animations = [{
 "loop": false,
 "name": &"attack",
 "speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_qsmrd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_jtlb7")
+}],
+"loop": false,
+"name": &"dodge",
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -141,14 +154,6 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_1hh02")
-}],
-"loop": true,
-"name": &"test",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
 "texture": ExtResource("28_1hh02")
 }, {
 "duration": 1.0,
@@ -175,15 +180,15 @@ projectile_scene = ExtResource("2_5ttev")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-2, -31)
 sprite_frames = SubResource("SpriteFrames_pn6s4")
-animation = &"throw"
+animation = &"dodge"
 frame = 1
 frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_gfjak")
 
-[node name="DashTImer" type="Timer" parent="."]
-wait_time = 0.15
+[node name="DashTimer" type="Timer" parent="."]
+wait_time = 0.3
 one_shot = true
 
 [node name="AttackTimer" type="Timer" parent="."]
@@ -201,5 +206,11 @@ shape = SubResource("RectangleShape2D_76i7i")
 [node name="ProjectileSpawn" type="Marker2D" parent="."]
 position = Vector2(13, -10)
 
+[node name="Hurtbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CapsuleShape2D_gfjak")
+
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
 [connection signal="frame_changed" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_frame_changed"]
+[connection signal="timeout" from="DashTimer" to="." method="_on_dash_timer_timeout"]
