@@ -26,12 +26,10 @@ enum State {
 
 @onready var idle_sprite: AnimatedSprite2D = $Idle
 @onready var high_dash_attack_sprite: AnimatedSprite2D = $BigAttack
-@onready var flame_sprite: AnimatedSprite2D = $Flame
+@onready var blue_flame_sprite: AnimatedSprite2D = $FlameBlue
 
 @onready var hurtbox: Area2D = $Hurtbox
 @onready var hurtbox_shape: CollisionShape2D = $Hurtbox/CollisionShape2D
-@onready var hitbox: Area2D = $Hitbox
-@onready var hitbox_shape: CollisionShape2D = $Hitbox/CollisionShape2D
 @onready var big_hitbox: Area2D = $BigHitbox
 @onready var big_hitbox_shape: CollisionShape2D = $BigHitbox/CollisionShape2D
 
@@ -82,19 +80,18 @@ func _change_state(new_state: State) -> void:
 	match state:
 		State.HIGH_DASH_ATTACK:
 			high_dash_attack_sprite.stop()
-			flame_sprite.visible = false
-			flame_sprite.stop()
+			blue_flame_sprite.visible = false
+			blue_flame_sprite.stop()
 			_assign_nearest_waypoint()
 			update_facing()
 
 	state = new_state
 
 	# --- disable all hitboxes and sprites ---
-	_set_hitbox(hitbox, hitbox_shape, false)
 	_set_hitbox(big_hitbox, big_hitbox_shape, false)
 	idle_sprite.visible = false
 	high_dash_attack_sprite.visible = false
-	flame_sprite.visible = false
+	blue_flame_sprite.visible = false
 
 	# --- enter new state ---
 	match state:
@@ -161,16 +158,16 @@ func _update_attack_boxes_and_flame() -> void:
 				_set_hitbox(big_hitbox, big_hitbox_shape, hit_active)
 
 				if flame_active:
-					flame_sprite.visible = true
-					if not flame_sprite.is_playing():
-						flame_sprite.play("flame")
+					blue_flame_sprite.visible = true
+					if not blue_flame_sprite.is_playing():
+						blue_flame_sprite.play("flame")
 				else:
-					flame_sprite.visible = false
-					flame_sprite.stop()
+					blue_flame_sprite.visible = false
+					blue_flame_sprite.stop()
 			else:
 				_set_hitbox(big_hitbox, big_hitbox_shape, false)
-				flame_sprite.visible = false
-				flame_sprite.stop()
+				blue_flame_sprite.visible = false
+				blue_flame_sprite.stop()
 
 # ── Helpers ────────────────────────────────────────────────────
 

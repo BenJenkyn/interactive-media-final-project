@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://bl4wv2qpthcg1"]
+[gd_scene load_steps=43 format=3 uid="uid://bl4wv2qpthcg1"]
 
 [ext_resource type="Script" uid="uid://b5eaed0u3i30w" path="res://scripts/dragon.gd" id="1_n5a5n"]
 [ext_resource type="Texture2D" uid="uid://buvrj6ok5ex0p" path="res://assets/enemies/1 demon-Files/Sprites/Idle/idle1.png" id="2_4qq75"]
@@ -204,13 +204,9 @@ animations = [{
 "speed": 8.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qrcwf"]
-radius = 22.0
-height = 66.0
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mgwti"]
-radius = 48.0
-height = 188.0
+radius = 62.000004
+height = 218.0
 
 [node name="dragon" type="CharacterBody2D" groups=["enemy"]]
 collision_layer = 2
@@ -232,7 +228,7 @@ position = Vector2(-28, -33)
 sprite_frames = SubResource("SpriteFrames_sum6d")
 animation = &"attack"
 
-[node name="Flame" type="AnimatedSprite2D" parent="."]
+[node name="FlameBlue" type="AnimatedSprite2D" parent="."]
 position = Vector2(-137, 45)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_7xd1k")
@@ -241,23 +237,17 @@ frame = 2
 frame_progress = 0.9605191
 
 [node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2(-14, 1)
 shape = SubResource("CapsuleShape2D_47cfb")
 
-[node name="Hitbox" type="Area2D" parent="."]
-position = Vector2(-68, 34)
-rotation = 1.5707964
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(-4.9999995, 14)
-shape = SubResource("CapsuleShape2D_qrcwf")
-
 [node name="BigHitbox" type="Area2D" parent="."]
+collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BigHitbox"]
-position = Vector2(-121, 67)
+position = Vector2(-128, 52)
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_mgwti")
 
