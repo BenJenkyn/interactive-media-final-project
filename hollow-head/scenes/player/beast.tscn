@@ -1,0 +1,197 @@
+[gd_scene load_steps=30 format=3 uid="uid://i8ted54dl21m"]
+
+[ext_resource type="Script" uid="uid://d2dux5sjgb2b0" path="res://scripts/beast.gd" id="1_0vgns"]
+[ext_resource type="Texture2D" uid="uid://cdnifa7jhnjhd" path="res://assets/enemies/1 Hell-Beast-Files/Breath/Sprites/hell-beast-breath1.png" id="1_h08qo"]
+[ext_resource type="Texture2D" uid="uid://dxn1vjbublk0t" path="res://assets/enemies/1 Hell-Beast-Files/Breath/Sprites/hell-beast-breath2.png" id="2_0vgns"]
+[ext_resource type="PackedScene" uid="uid://cv6es3hixawa3" path="res://scenes/player/fireball.tscn" id="2_ykx7s"]
+[ext_resource type="Texture2D" uid="uid://cy4i4iophyu48" path="res://assets/enemies/1 Hell-Beast-Files/Breath/Sprites/hell-beast-breath3.png" id="3_ykx7s"]
+[ext_resource type="Texture2D" uid="uid://dgv4tfv6ov5u3" path="res://assets/enemies/1 Hell-Beast-Files/Breath/Sprites/hell-beast-breath4.png" id="4_v7uo1"]
+[ext_resource type="Texture2D" uid="uid://b5l7qaxbekj3w" path="res://assets/enemies/1 Hell-Beast-Files/Idle/Sprites/hell-beast-idle1.png" id="5_bh188"]
+[ext_resource type="Texture2D" uid="uid://c6eiipj8ba4tc" path="res://assets/enemies/1 Hell-Beast-Files/Idle/Sprites/hell-beast-idle2.png" id="6_ccaub"]
+[ext_resource type="Texture2D" uid="uid://cwvxmtt52uec" path="res://assets/enemies/1 Hell-Beast-Files/Idle/Sprites/hell-beast-idle3.png" id="7_63tio"]
+[ext_resource type="Texture2D" uid="uid://41ykqq6rdb23" path="res://assets/enemies/1 Hell-Beast-Files/Idle/Sprites/hell-beast-idle4.png" id="8_axcrn"]
+[ext_resource type="Texture2D" uid="uid://bb13cm08e2bmk" path="res://assets/enemies/1 Hell-Beast-Files/Idle/Sprites/hell-beast-idle5.png" id="9_jrc6y"]
+[ext_resource type="Texture2D" uid="uid://bucaek4vdic62" path="res://assets/enemies/1 Hell-Beast-Files/Idle/Sprites/hell-beast-idle6.png" id="10_jg173"]
+[ext_resource type="Texture2D" uid="uid://b4d6nvaq1jcme" path="res://assets/enemies/1 Hell-Beast-Files/Burn/Spritesheet.png" id="13_v7uo1"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_h08qo"]
+radius = 20.0
+height = 52.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_yrivk"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_h08qo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_0vgns")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ykx7s")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_v7uo1")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_bh188")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_ccaub")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_63tio")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_axcrn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_jrc6y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_jg173")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 8.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v7uo1"]
+atlas = ExtResource("13_v7uo1")
+region = Rect2(0, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bh188"]
+atlas = ExtResource("13_v7uo1")
+region = Rect2(74, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ccaub"]
+atlas = ExtResource("13_v7uo1")
+region = Rect2(148, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_63tio"]
+atlas = ExtResource("13_v7uo1")
+region = Rect2(222, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_axcrn"]
+atlas = ExtResource("13_v7uo1")
+region = Rect2(296, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jrc6y"]
+atlas = ExtResource("13_v7uo1")
+region = Rect2(370, 0, 74, 160)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wyhit"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v7uo1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bh188")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ccaub")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_63tio")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_axcrn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jrc6y")
+}],
+"loop": false,
+"name": &"teleport_out",
+"speed": 6.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jg173"]
+atlas = ExtResource("13_v7uo1")
+region = Rect2(370, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yrivk"]
+atlas = ExtResource("13_v7uo1")
+region = Rect2(296, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wyhit"]
+atlas = ExtResource("13_v7uo1")
+region = Rect2(222, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3xtlu"]
+atlas = ExtResource("13_v7uo1")
+region = Rect2(148, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_88diw"]
+atlas = ExtResource("13_v7uo1")
+region = Rect2(74, 0, 74, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xlnmg"]
+atlas = ExtResource("13_v7uo1")
+region = Rect2(0, 0, 74, 160)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mqdh4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jg173")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yrivk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wyhit")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3xtlu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_88diw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xlnmg")
+}],
+"loop": false,
+"name": &"teleport_in",
+"speed": 6.0
+}]
+
+[node name="Beast" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 29
+script = ExtResource("1_0vgns")
+projectile_scene = ExtResource("2_ykx7s")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-3, 4)
+shape = SubResource("CapsuleShape2D_h08qo")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-3, -53)
+sprite_frames = SubResource("SpriteFrames_yrivk")
+animation = &"attack"
+
+[node name="hurtbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox"]
+position = Vector2(-3, 4)
+shape = SubResource("CapsuleShape2D_h08qo")
+
+[node name="ProjectileSpawn" type="Marker2D" parent="."]
+position = Vector2(-17, 0)
+
+[node name="TeleportOutEffect" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -53)
+sprite_frames = SubResource("SpriteFrames_wyhit")
+animation = &"teleport_out"
+frame_progress = 1.0
+
+[node name="TeleportInEffect" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -53)
+sprite_frames = SubResource("SpriteFrames_mqdh4")
+animation = &"teleport_in"
