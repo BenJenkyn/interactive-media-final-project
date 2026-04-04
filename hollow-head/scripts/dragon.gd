@@ -2,7 +2,8 @@ extends CharacterBody2D
 
 enum State { 
 	IDLE, 
-	HIGH_DASH_ATTACK, 
+	HIGH_DASH_ATTACK,
+	CLOSE_ATTACK, 
 	DEAD 
 }
 
@@ -23,10 +24,17 @@ enum State {
 @export var waypoint_radius: float = 80.0
 @export var high_dash_attack_dash_speed: float = 400.0
 @export var high_dash_attack_dash_start_frame: int = 3
+@export var close_attack_speed: float = 150.0
+@export var close_attack_range: float = 200.0
+@export var close_attack_flame_start_frame: int = 6
+@export var close_attack_flame_end_frame: int = 15
+@export var close_attack_hitbox_start_frame: int = 7
+@export var close_attack_hitbox_end_frame: int = 14
 
 @onready var idle_sprite: AnimatedSprite2D = $Idle
 @onready var high_dash_attack_sprite: AnimatedSprite2D = $BigAttack
 @onready var blue_flame_sprite: AnimatedSprite2D = $FlameBlue
+@onready var orange_flame_sprite: AnimatedSprite2D = $FlameOrange
 
 @onready var hurtbox: Area2D = $Hurtbox
 @onready var hurtbox_shape: CollisionShape2D = $Hurtbox/CollisionShape2D
@@ -40,6 +48,8 @@ var attack_timer: float = 0.0
 var health: int = 3
 var assigned_waypoint: Node2D = null
 var dash_velocity: Vector2 = Vector2.ZERO
+var close_attack_target: Vector2 = Vector2.ZERO
+var close_attack_returning: bool = false
 
 func _ready() -> void:
 	randomize()
@@ -57,6 +67,8 @@ func _physics_process(delta: float) -> void:
 			velocity = dash_velocity
 			velocity.y = 0.0
 			_update_attack_boxes_and_flame()
+		State.CLOSE_ATTACK:
+			_process_close_attack(delta)
 
 	move_and_slide()
 	_enforce_bounds()
@@ -95,6 +107,12 @@ func _change_state(new_state: State) -> void:
 			_assign_nearest_waypoint()
 			
 			update_facing()
+		State.CLOSE_ATTACK:
+			high_dash_attack_sprite.stop()
+			orange_flame_sprite.visible = false
+			orange_flame_sprite.stop()
+			_assign_nearest_waypoint()
+			close_attack_returning = false
 
 	state = new_state
 
@@ -103,6 +121,7 @@ func _change_state(new_state: State) -> void:
 	idle_sprite.visible = false
 	high_dash_attack_sprite.visible = false
 	blue_flame_sprite.visible = false
+	orange_flame_sprite.visible = false
 
 	# --- enter new state ---
 	match state:
@@ -124,6 +143,15 @@ func _change_state(new_state: State) -> void:
 			dash_velocity = Vector2(to_center.x, 0) * high_dash_attack_dash_speed
 			move_direction = to_center
 
+		State.CLOSE_ATTACK:
+			var player = get_tree().get_first_node_in_group("player")
+			if player != null:
+				close_attack_target = player.global_position
+				high_dash_attack_sprite.visible = true
+				high_dash_attack_sprite.play("attack")
+				high_dash_attack_sprite.frame = 0
+				close_attack_returning = false
+
 		State.DEAD:
 			_set_hitbox(hurtbox, hurtbox_shape, false)
 			queue_free()
@@ -139,9 +167,15 @@ func _process_idle(delta: float) -> void:
 		reset_direction_timer()
 
 	if attack_timer <= 0.0:
-		# TODO add more attack variations
-		var next := State.HIGH_DASH_ATTACK
-		_change_state(next)
+		var player = get_tree().get_first_node_in_group("player")
+		var attack_choice: State = State.HIGH_DASH_ATTACK
+		
+		if player != null:
+			var distance_to_player := global_position.distance_to(player.global_position)
+			if distance_to_player < close_attack_range and randf() < 0.5:
+				attack_choice = State.CLOSE_ATTACK
+		
+		_change_state(attack_choice)
 		return
 
 	velocity = move_direction * move_speed
@@ -157,6 +191,27 @@ func _process_idle(delta: float) -> void:
 		reset_direction_timer()
 
 # ── Attack box / flame logic ───────────────────────────────────
+
+func _process_close_attack(delta: float) -> void:
+	if not close_attack_returning:
+		var to_target := close_attack_target - global_position
+		if to_target.length() > 20.0:
+			velocity = to_target.normalized() * close_attack_speed
+			move_direction = to_target.normalized()
+		else:
+			velocity = Vector2.ZERO
+			if high_dash_attack_sprite.frame >= close_attack_flame_start_frame:
+				close_attack_returning = true
+	else:
+		# Return to waypoint
+		if assigned_waypoint != null:
+			var to_waypoint := assigned_waypoint.global_position - global_position
+			if to_waypoint.length() > 10.0:
+				velocity = to_waypoint.normalized() * close_attack_speed
+			else:
+				velocity = Vector2.ZERO
+
+	_update_attack_boxes_and_flame()
 
 func _update_attack_boxes_and_flame() -> void:
 	match state:
@@ -179,6 +234,25 @@ func _update_attack_boxes_and_flame() -> void:
 				_set_hitbox(big_hitbox, big_hitbox_shape, false)
 				blue_flame_sprite.visible = false
 				blue_flame_sprite.stop()
+		State.CLOSE_ATTACK:
+			if high_dash_attack_sprite.animation == "attack":
+				var f := high_dash_attack_sprite.frame
+				var flame_active := f >= close_attack_flame_start_frame and f <= close_attack_flame_end_frame
+				var hit_active := f >= close_attack_hitbox_start_frame and f <= close_attack_hitbox_end_frame
+
+				_set_hitbox(big_hitbox, big_hitbox_shape, hit_active)
+
+				if flame_active:
+					orange_flame_sprite.visible = true
+					if not orange_flame_sprite.is_playing():
+						orange_flame_sprite.play("flame")
+				else:
+					orange_flame_sprite.visible = false
+					orange_flame_sprite.stop()
+			else:
+				_set_hitbox(big_hitbox, big_hitbox_shape, false)
+				orange_flame_sprite.visible = false
+				orange_flame_sprite.stop()
 
 # ── Helpers ────────────────────────────────────────────────────
 
@@ -225,4 +299,6 @@ func take_damage(amount: int) -> void:
 # Used for high dash attack
 func _on_big_attack_animation_finished() -> void:
 	if state == State.HIGH_DASH_ATTACK:
+		_change_state(State.IDLE)
+	elif state == State.CLOSE_ATTACK:
 		_change_state(State.IDLE)
