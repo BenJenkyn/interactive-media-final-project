@@ -5,7 +5,7 @@ extends Node2D
 @onready var beast = $Beast
 
 func _ready() -> void:
-	#beast.is_visible = false
+	beast.visible = false
 	spawn_beast_effect()
 
 func spawn_beast_effect() -> void:

@@ -23,14 +23,17 @@ func change_state(new_state: LevelStateEnum):
 		LevelStateEnum.LEVEL3:
 			_load_level3()
 
+func _change_scene(path: String):
+	get_tree().call_deferred("change_scene_to_file", path)
+
 func _load_main_menu():
-	get_tree().change_scene_to_file("res://scenes/levels/main_menu.tscn")
-	
+	_change_scene("res://scenes/levels/main_menu.tscn")
+
 func _load_level1():
-	get_tree().change_scene_to_file("res://scenes/levels/level1.tscn")
-	
+	_change_scene("res://scenes/levels/level1.tscn")
+
 func _load_level2():
-	get_tree().change_scene_to_file("res://scenes/levels/level2.tscn")
-	
+	_change_scene("res://scenes/levels/level2.tscn")
+
 func _load_level3():
-	get_tree().change_scene_to_file("res://scenes/levels/level3.tscn")
+	_change_scene("res://scenes/levels/level3.tscn")
