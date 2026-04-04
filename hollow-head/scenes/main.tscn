@@ -1,9 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cyikalf080y8p"]
+[gd_scene load_steps=6 format=3 uid="uid://bs7m0i385mtws"]
 
 [ext_resource type="PackedScene" uid="uid://e7ihj1pv4fmu" path="res://scenes/player/Player.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://bw1vyenlhect0" path="res://scripts/main.gd" id="1_sugp2"]
-[ext_resource type="PackedScene" uid="uid://bua4m2f24p1p7" path="res://scenes/player/spawn_effect.tscn" id="2_jyhfs"]
-[ext_resource type="PackedScene" uid="uid://i8ted54dl21m" path="res://scenes/player/beast.tscn" id="3_jyhfs"]
+[ext_resource type="PackedScene" path="res://scenes/player/beast.tscn" id="3_jyhfs"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
 size = Vector2(1, 1)
@@ -13,7 +12,6 @@ size = Vector2(1, 1)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_sugp2")
-spawn_effect_scene = ExtResource("2_jyhfs")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(603, 346)

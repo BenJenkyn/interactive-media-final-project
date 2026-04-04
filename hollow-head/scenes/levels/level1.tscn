@@ -421,11 +421,7 @@ texture = ExtResource("5_dywbp")
 sources/0 = SubResource("TileSetAtlasSource_bfxgj")
 sources/2 = SubResource("TileSetAtlasSource_1seuy")
 
-[node name="Level1" type="Control"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="Level1" type="Node2D"]
 
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1

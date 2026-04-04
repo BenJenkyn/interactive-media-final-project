@@ -3,11 +3,7 @@
 [ext_resource type="Script" uid="uid://bulkrp38gw7rh" path="res://scenes/levels/main_menu.gd" id="1_721jg"]
 [ext_resource type="Texture2D" uid="uid://bweae3n8f5yaf" path="res://assets/background/1 Gothicvania Swamp files/PSD/preview.png" id="1_l6cm7"]
 
-[node name="MainMenu" type="Control"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="MainMenu" type="Node2D"]
 script = ExtResource("1_721jg")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]

@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="HOLLOW HEAD"
-run/main_scene="uid://cyikalf080y8p"
+run/main_scene="uid://bs7m0i385mtws"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
