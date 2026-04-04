@@ -296,6 +296,19 @@ height = 188.0
 collision_layer = 2
 collision_mask = 29
 script = ExtResource("1_n5a5n")
+move_speed = null
+direction_change_time_min = null
+direction_change_time_max = null
+attack_time_min = null
+attack_time_max = null
+top_limit_y = null
+start_facing_left = null
+normal_attack_chance = null
+attack_hitbox_start_frame = null
+big_flame_start_frame = null
+big_flame_end_frame = null
+big_hitbox_start_frame = null
+big_hitbox_end_frame = null
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-14, 1)
