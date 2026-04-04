@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://i8ted54dl21m"]
+[gd_scene load_steps=31 format=3 uid="uid://i8ted54dl21m"]
 
 [ext_resource type="Script" uid="uid://d2dux5sjgb2b0" path="res://scripts/beast.gd" id="1_0vgns"]
 [ext_resource type="Texture2D" uid="uid://cdnifa7jhnjhd" path="res://assets/enemies/1 Hell-Beast-Files/Breath/Sprites/hell-beast-breath1.png" id="1_h08qo"]
@@ -161,14 +161,18 @@ animations = [{
 "speed": 6.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v7uo1"]
+size = Vector2(40.333336, 159)
+
 [node name="Beast" type="CharacterBody2D"]
+scale = Vector2(3, 3)
 collision_layer = 2
 collision_mask = 29
 script = ExtResource("1_0vgns")
 projectile_scene = ExtResource("2_ykx7s")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-3, 4)
+position = Vector2(0, 2)
 shape = SubResource("CapsuleShape2D_h08qo")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -195,3 +199,17 @@ frame_progress = 1.0
 position = Vector2(0, -53)
 sprite_frames = SubResource("SpriteFrames_mqdh4")
 animation = &"teleport_in"
+
+[node name="TeleportOutDamage" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TeleportOutDamage"]
+position = Vector2(-3.5, -53.5)
+shape = SubResource("RectangleShape2D_v7uo1")
+disabled = true
+
+[node name="TeleportInDamage" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TeleportInDamage"]
+position = Vector2(-3.5, -53.5)
+shape = SubResource("RectangleShape2D_v7uo1")
+disabled = true

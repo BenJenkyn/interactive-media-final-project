@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://dvnpmmhtngo22"]
+[gd_scene load_steps=14 format=4 uid="uid://dvnpmmhtngo22"]
 
 [ext_resource type="PackedScene" uid="uid://e7ihj1pv4fmu" path="res://scenes/player/Player.tscn" id="1_2r1tl"]
 [ext_resource type="Texture2D" uid="uid://dueottrvc7p63" path="res://assets/background/1 Gothicvania Swamp files/Evironment/background.png" id="1_dd0lh"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dskg0csw8thfh" path="res://assets/background/1 Gothicvania Swamp files/Evironment/tileset.png" id="4_bfxgj"]
 [ext_resource type="Texture2D" uid="uid://c2d6bvm0egjlh" path="res://assets/background/1 Gothicvania Swamp files/Evironment/trees.png" id="5_dywbp"]
 [ext_resource type="PackedScene" uid="uid://blyuyu0w5k02s" path="res://scenes/UI/hud.tscn" id="6_1seuy"]
+[ext_resource type="PackedScene" uid="uid://dgtrng7x87fd3" path="res://scenes/player/toad.tscn" id="8_8a7m2"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dywbp"]
 texture = ExtResource("4_bfxgj")
@@ -467,3 +468,6 @@ tile_map_data = PackedByteArray("AAAFACQAAAABAAUAAAAFACUAAAABAAYAAAAGACMAAAACAAQ
 tile_set = SubResource("TileSet_dywbp")
 
 [node name="Hud" parent="." instance=ExtResource("6_1seuy")]
+
+[node name="Enemy" parent="." instance=ExtResource("8_8a7m2")]
+position = Vector2(808, 394)
