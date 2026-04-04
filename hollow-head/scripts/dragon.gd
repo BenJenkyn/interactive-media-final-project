@@ -21,6 +21,7 @@ enum State {
 @export var big_flame_end_frame: int = 15
 @export var big_hitbox_start_frame: int = 7
 @export var big_hitbox_end_frame: int = 14
+@export var waypoint_radius: float = 80.0
 
 @onready var idle_sprite: AnimatedSprite2D = $Idle
 @onready var attack_sprite: AnimatedSprite2D = $Attack
@@ -79,10 +80,12 @@ func _change_state(new_state: State) -> void:
 	match state:
 		State.NORMAL_ATTACK:
 			attack_sprite.stop()
+			_assign_nearest_waypoint()
 		State.BIG_ATTACK:
 			big_attack_sprite.stop()
 			flame_sprite.visible = false
 			flame_sprite.stop()
+			_assign_nearest_waypoint()
 
 	state = new_state
 
@@ -137,6 +140,13 @@ func _process_idle(delta: float) -> void:
 		return
 
 	velocity = move_direction * move_speed
+	
+	if assigned_waypoint != null:
+		var to_waypoint := assigned_waypoint.global_position - global_position
+		if to_waypoint.length() > waypoint_radius:
+			move_direction = to_waypoint.normalized()
+			reset_direction_timer()
+			update_facing()
 
 	if is_on_wall():
 		move_direction = move_direction.bounce(get_wall_normal()).normalized()
