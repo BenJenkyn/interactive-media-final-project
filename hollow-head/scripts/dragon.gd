@@ -2,8 +2,7 @@ extends CharacterBody2D
 
 enum State { 
 	IDLE, 
-	NORMAL_ATTACK, 
-	BIG_ATTACK, 
+	HIGH_DASH_ATTACK, 
 	DEAD 
 }
 
@@ -22,12 +21,11 @@ enum State {
 @export var big_hitbox_start_frame: int = 7
 @export var big_hitbox_end_frame: int = 14
 @export var waypoint_radius: float = 80.0
-@export var big_attack_dash_speed: float = 400.0
-@export var big_attack_dash_start_frame: int = 3
+@export var high_dash_attack_dash_speed: float = 400.0
+@export var high_dash_attack_dash_start_frame: int = 3
 
 @onready var idle_sprite: AnimatedSprite2D = $Idle
-@onready var attack_sprite: AnimatedSprite2D = $Attack
-@onready var big_attack_sprite: AnimatedSprite2D = $BigAttack
+@onready var high_dash_attack_sprite: AnimatedSprite2D = $BigAttack
 @onready var flame_sprite: AnimatedSprite2D = $Flame
 
 @onready var hurtbox: Area2D = $Hurtbox
@@ -56,7 +54,7 @@ func _physics_process(delta: float) -> void:
 	match state:
 		State.IDLE:
 			_process_idle(delta)
-		State.NORMAL_ATTACK, State.BIG_ATTACK:
+		State.HIGH_DASH_ATTACK:
 			velocity = dash_velocity
 			velocity.y = 0.0
 			_update_attack_boxes_and_flame()
@@ -82,12 +80,8 @@ func _assign_nearest_waypoint() -> void:
 func _change_state(new_state: State) -> void:
 	# --- exit current state ---
 	match state:
-		State.NORMAL_ATTACK:
-			attack_sprite.stop()
-			_assign_nearest_waypoint()
-			update_facing()
-		State.BIG_ATTACK:
-			big_attack_sprite.stop()
+		State.HIGH_DASH_ATTACK:
+			high_dash_attack_sprite.stop()
 			flame_sprite.visible = false
 			flame_sprite.stop()
 			_assign_nearest_waypoint()
@@ -99,8 +93,7 @@ func _change_state(new_state: State) -> void:
 	_set_hitbox(hitbox, hitbox_shape, false)
 	_set_hitbox(big_hitbox, big_hitbox_shape, false)
 	idle_sprite.visible = false
-	attack_sprite.visible = false
-	big_attack_sprite.visible = false
+	high_dash_attack_sprite.visible = false
 	flame_sprite.visible = false
 
 	# --- enter new state ---
@@ -114,22 +107,13 @@ func _change_state(new_state: State) -> void:
 			reset_attack_timer()
 			reset_direction_timer()
 
-		State.NORMAL_ATTACK:
-			attack_sprite.visible = true
-			attack_sprite.play("attack")
-			attack_sprite.frame = 0
+		State.HIGH_DASH_ATTACK:
+			high_dash_attack_sprite.visible = true
+			high_dash_attack_sprite.play("attack")
+			high_dash_attack_sprite.frame = 0
 			var center := get_viewport_rect().size / 2
 			var to_center := (center - global_position).normalized()
-			dash_velocity = Vector2(to_center.x, 0) * big_attack_dash_speed
-			move_direction = to_center
-
-		State.BIG_ATTACK:
-			big_attack_sprite.visible = true
-			big_attack_sprite.play("attack")
-			big_attack_sprite.frame = 0
-			var center := get_viewport_rect().size / 2
-			var to_center := (center - global_position).normalized()
-			dash_velocity = Vector2(to_center.x, 0) * big_attack_dash_speed
+			dash_velocity = Vector2(to_center.x, 0) * high_dash_attack_dash_speed
 			move_direction = to_center
 
 		State.DEAD:
@@ -147,7 +131,8 @@ func _process_idle(delta: float) -> void:
 		reset_direction_timer()
 
 	if attack_timer <= 0.0:
-		var next := State.NORMAL_ATTACK if randf() <= normal_attack_chance else State.BIG_ATTACK
+		# TODO add more attack variations
+		var next := State.HIGH_DASH_ATTACK
 		_change_state(next)
 		return
 
@@ -167,14 +152,9 @@ func _process_idle(delta: float) -> void:
 
 func _update_attack_boxes_and_flame() -> void:
 	match state:
-		State.NORMAL_ATTACK:
-			var active := attack_sprite.animation == "attack" \
-				and attack_sprite.frame >= attack_hitbox_start_frame
-			_set_hitbox(hitbox, hitbox_shape, active)
-
-		State.BIG_ATTACK:
-			if big_attack_sprite.animation == "attack":
-				var f := big_attack_sprite.frame
+		State.HIGH_DASH_ATTACK:
+			if high_dash_attack_sprite.animation == "attack":
+				var f := high_dash_attack_sprite.frame
 				var flame_active := f >= big_flame_start_frame and f <= big_flame_end_frame
 				var hit_active := f >= big_hitbox_start_frame and f <= big_hitbox_end_frame
 
@@ -234,10 +214,7 @@ func take_damage(amount: int) -> void:
 
 # ── Animation signals ──────────────────────────────────────────
 
-func _on_attack_animation_finished() -> void:
-	if state == State.NORMAL_ATTACK:
-		_change_state(State.IDLE)
-
+# Used for high dash attack
 func _on_big_attack_animation_finished() -> void:
-	if state == State.BIG_ATTACK:
+	if state == State.HIGH_DASH_ATTACK:
 		_change_state(State.IDLE)
