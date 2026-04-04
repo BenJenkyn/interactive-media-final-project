@@ -47,6 +47,7 @@ func _ready() -> void:
 	reset_direction_timer()
 	reset_attack_timer()
 	_change_state(State.IDLE)
+	_assign_nearest_waypoint()
 
 func _physics_process(delta: float) -> void:
 	match state:
@@ -71,7 +72,16 @@ func _assign_nearest_waypoint() -> void:
 		if d < nearest_dist:
 			nearest_dist = d
 			nearest = wp
-	assigned_waypoint = nearest
+
+	var is_right := nearest.name.contains("Right")
+	var side := "Right" if is_right else "Left"
+	var vertical := "Top" if randf() < 0.5 else "Bottom"
+	var target_name := vertical + side + "Marker"
+
+	for wp in waypoints:
+		if wp.name == target_name:
+			assigned_waypoint = wp
+			return
 
 # ── State transitions ──────────────────────────────────────────
 
@@ -83,6 +93,7 @@ func _change_state(new_state: State) -> void:
 			blue_flame_sprite.visible = false
 			blue_flame_sprite.stop()
 			_assign_nearest_waypoint()
+			
 			update_facing()
 
 	state = new_state

@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://bl4wv2qpthcg1"]
+[gd_scene load_steps=50 format=3 uid="uid://bl4wv2qpthcg1"]
 
 [ext_resource type="Script" uid="uid://b5eaed0u3i30w" path="res://scripts/dragon.gd" id="1_n5a5n"]
 [ext_resource type="Texture2D" uid="uid://buvrj6ok5ex0p" path="res://assets/enemies/1 demon-Files/Sprites/Idle/idle1.png" id="2_4qq75"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://br0fdnqj2f5xb" path="res://assets/enemies/1 demon-Files/Sprites/Idle/idle5.png" id="6_n5jix"]
 [ext_resource type="Texture2D" uid="uid://b1xjbaigwl10q" path="res://assets/enemies/1 demon-Files/Sprites/Idle/idle6.png" id="7_hmdhu"]
 [ext_resource type="Texture2D" uid="uid://cuairfsblmflt" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame1.png" id="26_sum6d"]
+[ext_resource type="Texture2D" uid="uid://cvispwltku5cj" path="res://assets/enemies/1 demon-Files/Spritesheets/breath-fire.png" id="27_8fn3l"]
 [ext_resource type="Texture2D" uid="uid://cb536hrvx0r4p" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame2.png" id="27_pkmt2"]
 [ext_resource type="Texture2D" uid="uid://d0nclf8cmd1ul" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame3.png" id="28_td5lo"]
 [ext_resource type="Texture2D" uid="uid://62jlnhx33qwy" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame4.png" id="29_surjs"]
@@ -202,11 +203,64 @@ animations = [{
 "loop": false,
 "name": &"flame",
 "speed": 8.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"new_animation",
+"speed": 5.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mgwti"]
 radius = 62.000004
 height = 218.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7vju6"]
+atlas = ExtResource("27_8fn3l")
+region = Rect2(0, 0, 160, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_44nqu"]
+atlas = ExtResource("27_8fn3l")
+region = Rect2(160, 0, 160, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_polqc"]
+atlas = ExtResource("27_8fn3l")
+region = Rect2(320, 0, 160, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_744fr"]
+atlas = ExtResource("27_8fn3l")
+region = Rect2(480, 0, 160, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i4hfw"]
+atlas = ExtResource("27_8fn3l")
+region = Rect2(640, 0, 160, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x3m8q"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7vju6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_44nqu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_polqc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_744fr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i4hfw")
+}],
+"loop": true,
+"name": &"new_animation",
+"speed": 5.0
+}]
 
 [node name="dragon" type="CharacterBody2D" groups=["enemy"]]
 collision_layer = 2
@@ -233,8 +287,6 @@ position = Vector2(-137, 45)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_7xd1k")
 animation = &"flame"
-frame = 2
-frame_progress = 0.9605191
 
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 2
@@ -250,5 +302,11 @@ collision_layer = 2
 position = Vector2(-128, 52)
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_mgwti")
+
+[node name="FlameOrange" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(128, 79)
+sprite_frames = SubResource("SpriteFrames_x3m8q")
+animation = &"new_animation"
 
 [connection signal="animation_finished" from="BigAttack" to="." method="_on_big_attack_animation_finished"]
