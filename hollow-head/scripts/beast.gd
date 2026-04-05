@@ -248,6 +248,7 @@ func die() -> void:
 	teleport_out_damage_shape.disabled = true
 	teleport_in_damage_shape.disabled = true
 	queue_free()
+	level_state.change_state(level_state.LevelStateEnum.VICTORY_SCREEN)
 
 func _on_animation_finished() -> void:
 	if anim.animation == "attack":
