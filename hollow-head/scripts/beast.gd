@@ -18,6 +18,7 @@ extends CharacterBody2D
 @onready var teleport_out_effect: AnimatedSprite2D = $TeleportOutEffect
 @onready var teleport_in_effect: AnimatedSprite2D = $TeleportInEffect
 @onready var teleport_signal: AnimatedSprite2D = $Teleportsignal
+@onready var death_animation: AnimatedSprite2D = $DeathAnimation
 
 @onready var teleport_out_damage: Area2D = $TeleportOutDamage
 @onready var teleport_out_damage_shape: CollisionShape2D = $TeleportOutDamage/CollisionShape2D
@@ -45,6 +46,7 @@ func _ready() -> void:
 	current_health = max_health
 
 	anim.animation_finished.connect(_on_animation_finished)
+	death_animation.animation_finished.connect(_on_death_animation_finished)
 	teleport_out_effect.animation_finished.connect(_on_teleport_out_finished)
 	teleport_in_effect.animation_finished.connect(_on_teleport_in_finished)
 
@@ -58,6 +60,7 @@ func _ready() -> void:
 	teleport_out_effect.visible = false
 	teleport_in_effect.visible = false
 	teleport_signal.visible = false
+	death_animation.visible = false
 	teleport_out_damage_shape.disabled = true
 	teleport_in_damage_shape.disabled = true
 
@@ -162,6 +165,9 @@ func get_random_teleport_position() -> Vector2:
 	return teleport_points[index].global_position
 
 func _on_teleport_out_finished() -> void:
+	if is_dead:
+		return
+
 	teleport_out_effect.visible = false
 	teleport_out_damage_shape.disabled = true
 
@@ -170,6 +176,9 @@ func _on_teleport_out_finished() -> void:
 	teleport_signal.play("signal")
 
 	await get_tree().create_timer(teleport_in_signal_time).timeout
+
+	if is_dead:
+		return
 
 	teleport_signal.visible = false
 
@@ -188,6 +197,9 @@ func _on_teleport_out_finished() -> void:
 	teleport_in_effect.play("teleport_in")
 
 func _on_teleport_in_finished() -> void:
+	if is_dead:
+		return
+
 	teleport_in_effect.visible = false
 	teleport_in_damage_shape.disabled = true
 	anim.visible = true
@@ -257,11 +269,16 @@ func die() -> void:
 	is_dead = true
 	is_attacking = false
 	is_teleporting = false
+	has_shot = false
+	velocity = Vector2.ZERO
 	teleport_signal.visible = false
+	teleport_out_effect.visible = false
+	teleport_in_effect.visible = false
 	teleport_out_damage_shape.disabled = true
 	teleport_in_damage_shape.disabled = true
-	queue_free()
-	level_state.change_state(level_state.LevelStateEnum.VICTORY_SCREEN)
+	anim.visible = false
+	death_animation.visible = true
+	death_animation.play("dead")
 
 func _on_animation_finished() -> void:
 	if anim.animation == "attack":
@@ -269,3 +286,10 @@ func _on_animation_finished() -> void:
 		has_shot = false
 		attack_timer = attack_cooldown
 		anim.play("idle")
+
+func _on_death_animation_finished() -> void:
+	if not is_dead:
+		return
+
+	level_state.change_state(level_state.LevelStateEnum.VICTORY_SCREEN)
+	queue_free()
