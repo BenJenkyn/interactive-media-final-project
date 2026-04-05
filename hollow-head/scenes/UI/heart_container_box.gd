@@ -5,12 +5,18 @@ var empty_heart_container = preload("res://scenes/UI/empty_heart_container.tscn"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	if not player_state.health_changed.is_connected(_on_health_changed):
+		player_state.health_changed.connect(_on_health_changed)
 	load_hearts()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass
+
+func _exit_tree() -> void:
+	if player_state.health_changed.is_connected(_on_health_changed):
+		player_state.health_changed.disconnect(_on_health_changed)
 
 func load_hearts():
 	for child in get_children():
@@ -19,3 +25,6 @@ func load_hearts():
 	for i in range(player_state.max_health):
 		var heart = full_heart_container.instantiate() if i < player_state.current_health else empty_heart_container.instantiate()
 		add_child(heart)
+
+func _on_health_changed(_current_health: int, _max_health: int) -> void:
+	load_hearts()

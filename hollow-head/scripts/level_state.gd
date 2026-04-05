@@ -23,6 +23,17 @@ func change_state(new_state: LevelStateEnum):
 		LevelStateEnum.LEVEL3:
 			_load_level3()
 
+func restart_current_level() -> void:
+	_clear_pause_state()
+	change_state(current_level_state)
+
+func go_to_main_menu() -> void:
+	_clear_pause_state()
+	change_state(LevelStateEnum.MAIN_MENU)
+
+func _clear_pause_state() -> void:
+	get_tree().paused = false
+
 func _change_scene(path: String):
 	get_tree().call_deferred("change_scene_to_file", path)
 
