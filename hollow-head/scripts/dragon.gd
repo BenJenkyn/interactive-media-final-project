@@ -192,8 +192,11 @@ func _change_state(new_state: State) -> void:
 			_set_hitbox(hurtbox, hurtbox_shape, false)
 			_set_hitbox(big_hitbox, big_hitbox_shape, false)
 			_set_hitbox(small_hitbox, small_hitbox_shape, false)
-			queue_free()
+			idle_sprite.visible = true
+			idle_sprite.play("dead")
+			await idle_sprite.animation_finished
 			level_state.change_state(level_state.LevelStateEnum.LEVEL3)
+			queue_free()
 
 func _process_idle(delta: float) -> void:
 	change_direction_timer -= delta
