@@ -206,9 +206,10 @@ func _reset_big_jump_timer() -> void:
 	big_jump_timer = randf_range(min_big_jump_wait, max_big_jump_wait)
 
 func _enable_attack_hitbox() -> void:
-	attack_shape.disabled = false
+	if anim.get_frame() == 3:
+		attack_shape.disabled = false
 
-	await get_tree().create_timer(attack_active_time).timeout
+		await get_tree().create_timer(attack_active_time).timeout
 
 	if not is_dead:
 		_disable_attack_hitbox()
