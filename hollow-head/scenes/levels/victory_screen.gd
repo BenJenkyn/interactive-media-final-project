@@ -24,4 +24,5 @@ func _process(delta: float) -> void:
 func _on_main_menu_pressed() -> void:
 	player_state.reset_health()
 	level_state.go_to_main_menu()
+	player_state.add_victory()
 	queue_free()

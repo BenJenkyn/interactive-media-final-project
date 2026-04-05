@@ -96,13 +96,13 @@ flip_h = true
 position = Vector2(504, 360)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_dfe5h")
-frame_progress = 0.9673952
+frame_progress = 0.4646699
 
 [node name="DancingNpc2" type="AnimatedSprite2D" parent="CanvasLayer"]
 position = Vector2(656, 360)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_dfe5h")
-frame_progress = 0.10036953
+frame_progress = 0.59764194
 flip_h = true
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
