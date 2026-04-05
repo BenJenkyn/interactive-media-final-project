@@ -1,8 +1,10 @@
 extends Area2D
 
 @export var speed: float = 220.0
-@export var life_time: float = 3.0
+@export var life_time: float = 6.0
 @export var damage: int = 1
+
+@onready var fireball_animation = $AnimatedSprite2D
 
 var direction: float = 1.0
 var has_hit: bool = false
@@ -10,6 +12,7 @@ var has_hit: bool = false
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
+	fireball_animation.play()
 
 func _physics_process(delta: float) -> void:
 	if has_hit:

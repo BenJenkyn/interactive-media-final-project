@@ -9,9 +9,12 @@ extends CharacterBody2D
 @export var teleport_points_path: NodePath
 @export var teleport_damage_amount: int = 1
 @export var teleport_signal_time: float = 0.5
-@export var teleport_in_signal_time: float = 0.4
+@export var teleport_in_signal_time: float = 0.7
 
-@export var max_health: int = 2
+@export var fireballs_per_attack: int = 3
+@export var time_between_fireballs: float = 0.25
+
+@export var max_health: int = 10
 
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var projectile_spawn: Marker2D = $ProjectileSpawn
@@ -26,6 +29,7 @@ extends CharacterBody2D
 @onready var teleport_in_damage_shape: CollisionShape2D = $TeleportInDamage/CollisionShape2D
 
 @onready var hurtbox: Area2D = $Hurtbox
+@onready var health_warning_label: Label = $HealthWarningLabel
 
 var target: Node2D = null
 var facing: float = 1.0
@@ -41,6 +45,12 @@ var teleport_hit_targets: Array[Node] = []
 
 var current_health: int = 0
 var is_dead: bool = false
+
+var health_warning_start_pos: Vector2
+var shown_50_percent: bool = false
+var shown_25_percent: bool = false
+var shown_10_percent: bool = false
+var warning_tween: Tween = null
 
 func _ready() -> void:
 	current_health = max_health
@@ -63,6 +73,12 @@ func _ready() -> void:
 	death_animation.visible = false
 	teleport_out_damage_shape.disabled = true
 	teleport_in_damage_shape.disabled = true
+
+	health_warning_start_pos = health_warning_label.position
+	health_warning_label.text = ""
+	health_warning_label.visible = false
+	health_warning_label.modulate = Color(1, 1, 1, 1)
+	health_warning_label.scale = Vector2(1, 1)
 
 	anim.play("idle")
 	attack_timer = attack_cooldown
@@ -106,8 +122,8 @@ func _physics_process(delta: float) -> void:
 
 	if is_attacking and not is_teleporting:
 		if anim.animation == "attack" and anim.frame >= shoot_frame and not has_shot:
-			spawn_fireball()
 			has_shot = true
+			fireball_burst()
 
 	move_and_slide()
 
@@ -171,7 +187,7 @@ func _on_teleport_out_finished() -> void:
 	teleport_out_effect.visible = false
 	teleport_out_damage_shape.disabled = true
 
-	teleport_signal.global_position = pending_teleport_position + Vector2(0, -60)
+	teleport_signal.global_position = pending_teleport_position + Vector2(0, -50)
 	teleport_signal.visible = true
 	teleport_signal.play("signal")
 
@@ -205,6 +221,21 @@ func _on_teleport_in_finished() -> void:
 	anim.visible = true
 	is_teleporting = false
 	start_attack()
+
+func fireball_burst() -> void:
+	_fireball_burst_async()
+
+func _fireball_burst_async() -> void:
+	var shot_count: int = max(1, fireballs_per_attack)
+
+	for i in range(shot_count):
+		if is_dead:
+			return
+
+		spawn_fireball()
+
+		if i < shot_count - 1:
+			await get_tree().create_timer(time_between_fireballs).timeout
 
 func spawn_fireball() -> void:
 	if projectile_scene == null:
@@ -254,6 +285,21 @@ func take_damage(amount: int) -> void:
 		return
 
 	current_health -= amount
+
+	var health_percent: float = float(current_health) / float(max_health)
+
+	if health_percent <= 0.5 and not shown_50_percent:
+		shown_50_percent = true
+		_show_health_warning("50% HEALTH")
+
+	if health_percent <= 0.25 and not shown_25_percent:
+		shown_25_percent = true
+		_show_health_warning("25% HEALTH")
+
+	if health_percent <= 0.10 and not shown_10_percent:
+		shown_10_percent = true
+		_show_health_warning("10% HEALTH")
+
 	print("Beast health: ", current_health)
 
 	anim.modulate = Color(1, 0.3, 0.3)
@@ -264,6 +310,38 @@ func take_damage(amount: int) -> void:
 
 	if current_health <= 0:
 		die()
+
+func _show_health_warning(text_to_show: String) -> void:
+	health_warning_label.text = text_to_show
+	health_warning_label.visible = true
+	health_warning_label.modulate = Color(1, 1, 1, 1)
+	health_warning_label.scale = Vector2(1.5, 1.5)
+	health_warning_label.position = health_warning_start_pos
+
+	if warning_tween != null:
+		warning_tween.kill()
+
+	warning_tween = create_tween()
+	warning_tween.tween_property(
+		health_warning_label,
+		"position",
+		health_warning_start_pos + Vector2(0, -20),
+		1.5
+	)
+	warning_tween.parallel().tween_property(
+		health_warning_label,
+		"modulate:a",
+		0.0,
+		1.5
+	)
+
+	await warning_tween.finished
+
+	if not is_dead:
+		health_warning_label.visible = false
+		health_warning_label.modulate = Color(1, 1, 1, 1)
+		health_warning_label.position = health_warning_start_pos
+		health_warning_label.scale = Vector2(1, 1)
 
 func die() -> void:
 	is_dead = true
@@ -281,6 +359,7 @@ func die() -> void:
 	anim.visible = false
 	death_animation.visible = true
 	death_animation.play("dead")
+	health_warning_label.visible = false
 
 func _on_animation_finished() -> void:
 	if anim.animation == "attack":
