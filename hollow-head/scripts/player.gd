@@ -17,7 +17,7 @@ enum PlayerState {
 @export var gravity: float = 900.0
 @export var projectile_scene: PackedScene
 
-@export var dodge_speed: float = 320.0
+@export var dodge_speed: float = 500.0
 @export var dodge_time: float = 0.30
 
 @export var max_health: int = 5
@@ -350,6 +350,9 @@ func unlock_throw() -> void:
 	print("Throw unlocked")
 
 func take_damage(amount: int) -> void:
+	if state == PlayerState.DODGE:
+		return
+
 	if not can_take_damage:
 		return
 
