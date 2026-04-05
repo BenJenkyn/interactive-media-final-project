@@ -368,5 +368,8 @@ func _show_health_warning(text_to_show: String) -> void:
 
 func die() -> void:
 	is_dead = true
+	anim.play("death")
+	await anim.animation_finished
 	queue_free()
+	#await get_tree().create_timer(3.0).timeout
 	level_state.change_state(level_state.LevelStateEnum.LEVEL2)
