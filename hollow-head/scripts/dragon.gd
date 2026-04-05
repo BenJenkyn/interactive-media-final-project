@@ -15,7 +15,7 @@ enum State {
 @export var top_limit_y: float = 80.0
 @export var start_facing_left: bool = true
 
-@export var max_health: int = 2
+@export var max_health: int = 10
 @export var big_attack_damage: int = 1
 @export var small_attack_damage: int = 1
 
@@ -48,6 +48,8 @@ enum State {
 @onready var small_hitbox: Area2D = $SmallHitbox
 @onready var small_hitbox_shape: CollisionShape2D = $SmallHitbox/CollisionShape2D
 
+@onready var health_warning_label: Label = $HealthWarningLabel
+
 var state: State = State.IDLE
 var move_direction: Vector2 = Vector2.RIGHT
 var change_direction_timer: float = 0.0
@@ -62,6 +64,12 @@ var is_dead: bool = false
 var big_attack_hit_targets: Array[Node] = []
 var small_attack_hit_targets: Array[Node] = []
 
+var health_warning_offset: Vector2
+var shown_50_percent: bool = false
+var shown_25_percent: bool = false
+var shown_10_percent: bool = false
+var warning_tween: Tween = null
+
 func _ready() -> void:
 	randomize()
 	health = max_health
@@ -75,6 +83,14 @@ func _ready() -> void:
 	small_hitbox.body_entered.connect(_on_small_hitbox_body_entered)
 	small_hitbox.area_entered.connect(_on_small_hitbox_area_entered)
 
+	health_warning_offset = health_warning_label.position
+	health_warning_label.top_level = true
+	health_warning_label.text = ""
+	health_warning_label.visible = false
+	health_warning_label.modulate = Color(1, 1, 1, 1)
+	health_warning_label.scale = Vector2(1, 1)
+	_update_warning_label_position()
+
 	reset_direction_timer()
 	reset_attack_timer()
 	_change_state(State.IDLE)
@@ -83,6 +99,9 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if is_dead:
 		return
+
+	if health_warning_label.visible:
+		_update_warning_label_position()
 
 	match state:
 		State.IDLE:
@@ -101,6 +120,9 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	_enforce_bounds()
+
+	if health_warning_label.visible:
+		_update_warning_label_position()
 
 func _assign_nearest_waypoint() -> void:
 	var waypoints := get_tree().get_nodes_in_group("waypoints")
@@ -192,6 +214,7 @@ func _change_state(new_state: State) -> void:
 			_set_hitbox(hurtbox, hurtbox_shape, false)
 			_set_hitbox(big_hitbox, big_hitbox_shape, false)
 			_set_hitbox(small_hitbox, small_hitbox_shape, false)
+			health_warning_label.visible = false
 			queue_free()
 			level_state.change_state(level_state.LevelStateEnum.LEVEL3)
 
@@ -208,7 +231,7 @@ func _process_idle(delta: float) -> void:
 		var attack_choice: State = State.HIGH_DASH_ATTACK
 
 		if player != null:
-			var distance_to_player := global_position.distance_to(player.global_position)
+			var distance_to_player: float = global_position.distance_to(player.global_position)
 			if distance_to_player < close_attack_range and randf() < 0.5:
 				attack_choice = State.CLOSE_ATTACK
 
@@ -334,10 +357,26 @@ func take_damage(amount: int) -> void:
 		return
 
 	health -= amount
+
+	var health_percent: float = float(health) / float(max_health)
+
+	if health_percent <= 0.5 and not shown_50_percent:
+		shown_50_percent = true
+		_show_health_warning("50% HEALTH")
+
+	if health_percent <= 0.25 and not shown_25_percent:
+		shown_25_percent = true
+		_show_health_warning("25% HEALTH")
+
+	if health_percent <= 0.10 and not shown_10_percent:
+		shown_10_percent = true
+		_show_health_warning("10% HEALTH")
+
 	print("Dragon health: ", health)
 
 	idle_sprite.modulate = Color(1, 0.3, 0.3)
 	high_dash_attack_sprite.modulate = Color(1, 0.3, 0.3)
+
 	await get_tree().create_timer(0.1).timeout
 
 	if not is_dead:
@@ -347,6 +386,47 @@ func take_damage(amount: int) -> void:
 	if health <= 0:
 		is_dead = true
 		_change_state(State.DEAD)
+
+func _show_health_warning(text_to_show: String) -> void:
+	health_warning_label.text = text_to_show
+	health_warning_label.visible = true
+	health_warning_label.modulate = Color(1, 1, 1, 1)
+	health_warning_label.scale = Vector2(1.5, 1.5)
+
+	if warning_tween != null:
+		warning_tween.kill()
+
+	_update_warning_label_position()
+
+	var start_pos: Vector2 = global_position + health_warning_offset
+	var end_pos: Vector2 = start_pos + Vector2(0.0, -20.0)
+
+	health_warning_label.global_position = start_pos
+
+	warning_tween = create_tween()
+	warning_tween.tween_property(
+		health_warning_label,
+		"global_position",
+		end_pos,
+		1.5
+	)
+	warning_tween.parallel().tween_property(
+		health_warning_label,
+		"modulate:a",
+		0.0,
+		1.5
+	)
+
+	await warning_tween.finished
+
+	if not is_dead:
+		health_warning_label.visible = false
+		health_warning_label.modulate = Color(1, 1, 1, 1)
+		health_warning_label.scale = Vector2(1, 1)
+		_update_warning_label_position()
+
+func _update_warning_label_position() -> void:
+	health_warning_label.global_position = global_position + health_warning_offset
 
 func _damage_node_once(target: Node, damage: int, hit_list: Array[Node]) -> void:
 	if target == null:

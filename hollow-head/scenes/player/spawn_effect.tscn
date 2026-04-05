@@ -54,7 +54,7 @@ animations = [{
 }]
 
 [node name="SpawnEffect" type="Node2D"]
-scale = Vector2(3, 3)
+scale = Vector2(2.6, 2.6)
 script = ExtResource("1_netid")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

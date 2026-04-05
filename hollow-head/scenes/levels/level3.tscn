@@ -63,7 +63,7 @@ scale = Vector2(2.5, 2.5)
 collision_mask = 18
 
 [node name="Beast" parent="." instance=ExtResource("6_frjko")]
-position = Vector2(836, 320)
+position = Vector2(1065, 332.00003)
 teleport_points_path = NodePath("../TeleportPoints")
 
 [node name="Hud" parent="." instance=ExtResource("1_sru4k")]
@@ -89,7 +89,7 @@ tile_set = SubResource("TileSet_t275y")
 position = Vector2(86, 397)
 
 [node name="Point2" type="Marker2D" parent="TeleportPoints"]
-position = Vector2(311, 398)
+position = Vector2(317, 396)
 
 [node name="Point3" type="Marker2D" parent="TeleportPoints"]
 position = Vector2(577, 398)
