@@ -371,5 +371,4 @@ func die() -> void:
 	anim.play("death")
 	await anim.animation_finished
 	queue_free()
-	#await get_tree().create_timer(3.0).timeout
 	level_state.change_state(level_state.LevelStateEnum.LEVEL2)
