@@ -164,10 +164,10 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v7uo1"]
 size = Vector2(40.333336, 159)
 
-[node name="Beast" type="CharacterBody2D"]
+[node name="Beast" type="CharacterBody2D" groups=["enemy"]]
 scale = Vector2(3, 3)
 collision_layer = 2
-collision_mask = 29
+collision_mask = 16
 script = ExtResource("1_0vgns")
 projectile_scene = ExtResource("2_ykx7s")
 
@@ -180,9 +180,11 @@ position = Vector2(-3, -53)
 sprite_frames = SubResource("SpriteFrames_yrivk")
 animation = &"attack"
 
-[node name="hurtbox" type="Area2D" parent="."]
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 128
+collision_mask = 64
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2(-3, 4)
 shape = SubResource("CapsuleShape2D_h08qo")
 
@@ -200,14 +202,18 @@ position = Vector2(0, -53)
 sprite_frames = SubResource("SpriteFrames_mqdh4")
 animation = &"teleport_in"
 
-[node name="TeleportOutDamage" type="Area2D" parent="."]
+[node name="TeleportOutDamage" type="Area2D" parent="." groups=["enemy_attack"]]
+collision_layer = 256
+collision_mask = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TeleportOutDamage"]
 position = Vector2(-3.5, -53.5)
 shape = SubResource("RectangleShape2D_v7uo1")
 disabled = true
 
-[node name="TeleportInDamage" type="Area2D" parent="."]
+[node name="TeleportInDamage" type="Area2D" parent="." groups=["enemy_attack"]]
+collision_layer = 256
+collision_mask = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TeleportInDamage"]
 position = Vector2(-3.5, -53.5)

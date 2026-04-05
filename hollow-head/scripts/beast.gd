@@ -9,6 +9,8 @@ extends CharacterBody2D
 @export var teleport_points_path: NodePath
 @export var teleport_damage_amount: int = 1
 
+@export var max_health: int = 5
+
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var projectile_spawn: Marker2D = $ProjectileSpawn
 @onready var teleport_out_effect: AnimatedSprite2D = $TeleportOutEffect
@@ -18,6 +20,8 @@ extends CharacterBody2D
 @onready var teleport_out_damage_shape: CollisionShape2D = $TeleportOutDamage/CollisionShape2D
 @onready var teleport_in_damage: Area2D = $TeleportInDamage
 @onready var teleport_in_damage_shape: CollisionShape2D = $TeleportInDamage/CollisionShape2D
+
+@onready var hurtbox: Area2D = $Hurtbox
 
 var target: Node2D = null
 var facing: float = 1.0
@@ -31,7 +35,12 @@ var teleport_points: Array[Marker2D] = []
 var last_teleport_index: int = -1
 var teleport_hit_targets: Array[Node] = []
 
+var current_health: int = 0
+var is_dead: bool = false
+
 func _ready() -> void:
+	current_health = max_health
+
 	anim.animation_finished.connect(_on_animation_finished)
 	teleport_out_effect.animation_finished.connect(_on_teleport_out_finished)
 	teleport_in_effect.animation_finished.connect(_on_teleport_in_finished)
@@ -40,6 +49,8 @@ func _ready() -> void:
 	teleport_in_damage.body_entered.connect(_on_teleport_damage_body_entered)
 	teleport_out_damage.area_entered.connect(_on_teleport_damage_area_entered)
 	teleport_in_damage.area_entered.connect(_on_teleport_damage_area_entered)
+
+	hurtbox.area_entered.connect(_on_hurtbox_area_entered)
 
 	teleport_out_effect.visible = false
 	teleport_in_effect.visible = false
@@ -64,6 +75,9 @@ func load_teleport_points() -> void:
 			teleport_points.append(child)
 
 func _physics_process(delta: float) -> void:
+	if is_dead:
+		return
+
 	if target == null:
 		target = get_tree().get_first_node_in_group("player") as Node2D
 
@@ -106,12 +120,15 @@ func update_facing_visuals() -> void:
 	projectile_spawn.position.x = projectile_spawn_distance * facing
 
 func start_attack() -> void:
+	if is_dead:
+		return
+
 	is_attacking = true
 	has_shot = false
 	anim.play("attack")
 
 func start_teleport_attack() -> void:
-	if is_teleporting:
+	if is_teleporting or is_dead:
 		return
 
 	is_teleporting = true
@@ -200,6 +217,37 @@ func _on_teleport_damage_body_entered(body: Node) -> void:
 func _on_teleport_damage_area_entered(area: Area2D) -> void:
 	if area.is_in_group("player_hurtbox"):
 		damage_target(area)
+
+func _on_hurtbox_area_entered(area: Area2D) -> void:
+	if is_dead:
+		return
+
+	if area.is_in_group("player_attack"):
+		take_damage(1)
+
+func take_damage(amount: int) -> void:
+	if is_dead:
+		return
+
+	current_health -= amount
+	print("Beast health: ", current_health)
+
+	anim.modulate = Color(1, 0.3, 0.3)
+	await get_tree().create_timer(0.1).timeout
+
+	if not is_dead:
+		anim.modulate = Color(1, 1, 1)
+
+	if current_health <= 0:
+		die()
+
+func die() -> void:
+	is_dead = true
+	is_attacking = false
+	is_teleporting = false
+	teleport_out_damage_shape.disabled = true
+	teleport_in_damage_shape.disabled = true
+	queue_free()
 
 func _on_animation_finished() -> void:
 	if anim.animation == "attack":

@@ -11,7 +11,7 @@ extends CharacterBody2D
 
 @export var jump_hurtbox_offset_y: float = -12.0
 
-@export var max_health: int = 3
+@export var max_health: int = 10
 @export var attack_damage: int = 1
 @export var attack_range: float = 100.0
 @export var attack_cooldown: float = 1.2
@@ -64,6 +64,7 @@ func _ready() -> void:
 	attack_area.monitoring = true
 	attack_shape.disabled = true
 	attack_area.body_entered.connect(_on_attack_area_body_entered)
+	hurtbox.area_entered.connect(_on_hurtbox_area_entered)
 
 	anim.play("idle")
 
@@ -226,6 +227,13 @@ func _on_attack_area_body_entered(body: Node) -> void:
 		body.take_damage(attack_damage)
 		attack_has_hit = true
 
+func _on_hurtbox_area_entered(area: Area2D) -> void:
+	if is_dead:
+		return
+
+	if area.is_in_group("player_attack"):
+		take_damage(1)
+
 func _update_attack_area_side(direction: float) -> void:
 	var new_x: float = abs(attack_area_x_offset)
 	if direction < 0.0:
@@ -283,6 +291,15 @@ func take_damage(amount: int) -> void:
 		return
 
 	health -= amount
+
+	print("Enemy health: ", health)
+
+	anim.modulate = Color(1, 0.3, 0.3)
+
+	await get_tree().create_timer(0.1).timeout
+
+	if not is_dead:
+		anim.modulate = Color(1, 1, 1)
 
 	if health <= 0:
 		die()

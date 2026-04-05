@@ -173,7 +173,7 @@ size = Vector2(33, 15)
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 scale = Vector2(2, 2)
-collision_mask = 18
+collision_mask = 16
 script = ExtResource("1_wr5hl")
 projectile_scene = ExtResource("2_5ttev")
 
@@ -195,10 +195,10 @@ one_shot = true
 wait_time = 0.3
 one_shot = true
 
-[node name="AttackArea" type="Area2D" parent="."]
+[node name="AttackArea" type="Area2D" parent="." groups=["player_attack"]]
 position = Vector2(29.5, -3)
-collision_layer = 4
-collision_mask = 2
+collision_layer = 64
+collision_mask = 128
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
 shape = SubResource("RectangleShape2D_76i7i")
@@ -207,6 +207,8 @@ shape = SubResource("RectangleShape2D_76i7i")
 position = Vector2(13, -10)
 
 [node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 258
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 shape = SubResource("CapsuleShape2D_gfjak")
