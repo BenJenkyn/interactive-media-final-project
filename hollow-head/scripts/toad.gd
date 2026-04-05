@@ -28,6 +28,17 @@ extends CharacterBody2D
 @onready var attack_shape: CollisionShape2D = $AttackArea/CollisionShape2D
 @onready var health_warning_label: Label = $HealthWarningLabel
 
+enum State {
+	IDLE,
+	MOVE,
+	ATTACK,
+	NORMAL_JUMP,
+	BIG_JUMP,
+	DEAD
+}
+
+var current_state: State = State.IDLE
+
 var player: Node2D = null
 
 var hurtbox_start_pos: Vector2
@@ -85,6 +96,8 @@ func _ready() -> void:
 	_reset_big_jump_timer()
 	_pick_random_move()
 
+	change_state(State.IDLE)
+
 func _physics_process(delta: float) -> void:
 	if is_dead:
 		return
@@ -95,22 +108,174 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
-	if is_attacking:
-		velocity.x = 0.0
-	elif is_big_jumping:
-		big_jump_elapsed += delta
-		velocity.x = big_jump_velocity_x
-	else:
-		_handle_ai(delta)
+	match current_state:
+		State.IDLE:
+			_state_idle(delta)
+
+		State.MOVE:
+			_state_move(delta)
+
+		State.ATTACK:
+			_state_attack(delta)
+
+		State.NORMAL_JUMP:
+			_state_normal_jump(delta)
+
+		State.BIG_JUMP:
+			_state_big_jump(delta)
+
+		State.DEAD:
+			return
 
 	move_and_slide()
 
-	if is_big_jumping and is_on_floor() and velocity.y >= 0.0:
+	if current_state == State.BIG_JUMP and is_big_jumping and is_on_floor() and velocity.y >= 0.0:
 		is_big_jumping = false
 		big_jump_velocity_x = 0.0
 		global_position.x = big_jump_target_x
+		change_state(State.IDLE)
 
 	_update_animation()
+
+func _process(_delta: float) -> void:
+	if is_dead:
+		return
+
+	if current_state == State.ATTACK and anim.animation == "attack":
+		var frame: int = anim.frame
+		var last_frame: int = anim.sprite_frames.get_frame_count("attack") - 1
+
+		if frame >= 1 and attack_shape.disabled:
+			_enable_attack_hitbox()
+
+		if frame >= last_frame:
+			_finish_attack()
+
+func change_state(new_state: State) -> void:
+	if current_state == new_state:
+		return
+
+	current_state = new_state
+
+	match current_state:
+		State.IDLE:
+			_enter_idle()
+
+		State.MOVE:
+			_enter_move()
+
+		State.ATTACK:
+			_enter_attack()
+
+		State.NORMAL_JUMP:
+			_enter_normal_jump()
+
+		State.BIG_JUMP:
+			_enter_big_jump()
+
+		State.DEAD:
+			_enter_dead()
+
+func _state_idle(delta: float) -> void:
+	if player == null:
+		_do_random_move(delta)
+		change_state(State.MOVE)
+		return
+
+	var dx: float = player.global_position.x - global_position.x
+	var abs_dx: float = abs(dx)
+	var facing_dir: float = sign(dx)
+
+	if facing_dir != 0.0:
+		anim.flip_h = facing_dir < 0.0
+		_update_attack_area_side(facing_dir)
+
+	if abs_dx <= attack_range and is_on_floor() and can_attack:
+		change_state(State.ATTACK)
+		return
+
+	normal_jump_timer -= delta
+	big_jump_timer -= delta
+	random_move_timer -= delta
+
+	if abs_dx > attack_range and big_jump_timer <= 0.0 and is_on_floor():
+		change_state(State.BIG_JUMP)
+		return
+
+	if normal_jump_timer <= 0.0 and is_on_floor():
+		change_state(State.NORMAL_JUMP)
+		return
+
+	change_state(State.MOVE)
+
+func _state_move(delta: float) -> void:
+	if player == null:
+		_do_random_move(delta)
+		return
+
+	var dx: float = player.global_position.x - global_position.x
+	var abs_dx: float = abs(dx)
+	var facing_dir: float = sign(dx)
+
+	if facing_dir != 0.0:
+		anim.flip_h = facing_dir < 0.0
+		_update_attack_area_side(facing_dir)
+
+	if abs_dx <= attack_range and is_on_floor():
+		velocity.x = 0.0
+		if can_attack:
+			change_state(State.ATTACK)
+		else:
+			change_state(State.IDLE)
+		return
+
+	normal_jump_timer -= delta
+	big_jump_timer -= delta
+
+	if abs_dx > attack_range and big_jump_timer <= 0.0 and is_on_floor():
+		change_state(State.BIG_JUMP)
+		return
+
+	_do_random_move(delta)
+
+	if normal_jump_timer <= 0.0 and is_on_floor():
+		change_state(State.NORMAL_JUMP)
+		return
+
+	if abs(velocity.x) <= 0.1:
+		change_state(State.IDLE)
+
+func _state_attack(_delta: float) -> void:
+	velocity.x = 0.0
+
+func _state_normal_jump(_delta: float) -> void:
+	if is_on_floor() and velocity.y >= 0.0:
+		change_state(State.IDLE)
+
+func _state_big_jump(delta: float) -> void:
+	if is_big_jumping:
+		big_jump_elapsed += delta
+		velocity.x = big_jump_velocity_x
+	else:
+		change_state(State.IDLE)
+
+func _enter_idle() -> void:
+	velocity.x = 0.0
+
+func _enter_move() -> void:
+	pass
+
+func _enter_attack() -> void:
+	_start_attack()
+
+func _enter_normal_jump() -> void:
+	_start_normal_jump()
+
+func _enter_big_jump() -> void:
+	_start_big_jump()
+
+func _enter_dead() -> void:
+	pass
 
 func _handle_ai(delta: float) -> void:
 	if player == null:
@@ -176,6 +341,7 @@ func _start_attack() -> void:
 func _finish_attack() -> void:
 	is_attacking = false
 	_disable_attack_hitbox()
+	change_state(State.IDLE)
 
 	await get_tree().create_timer(attack_cooldown).timeout
 
@@ -288,20 +454,6 @@ func _update_animation() -> void:
 		if anim.animation != "idle":
 			anim.play("idle")
 
-func _process(_delta: float) -> void:
-	if is_dead:
-		return
-
-	if is_attacking and anim.animation == "attack":
-		var frame: int = anim.frame
-		var last_frame: int = anim.sprite_frames.get_frame_count("attack") - 1
-
-		if frame >= 1 and attack_shape.disabled:
-			_enable_attack_hitbox()
-
-		if frame >= last_frame:
-			_finish_attack()
-
 func take_damage(amount: int) -> void:
 	if is_dead:
 		return
@@ -368,6 +520,7 @@ func _show_health_warning(text_to_show: String) -> void:
 
 func die() -> void:
 	is_dead = true
+	current_state = State.DEAD
 	hurtbox.monitoring = false
 	hurtbox.monitorable = false
 	anim.play("death")
