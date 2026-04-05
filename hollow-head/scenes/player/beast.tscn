@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://i8ted54dl21m"]
+[gd_scene load_steps=37 format=3 uid="uid://i8ted54dl21m"]
 
 [ext_resource type="Script" uid="uid://d2dux5sjgb2b0" path="res://scripts/beast.gd" id="1_0vgns"]
 [ext_resource type="Texture2D" uid="uid://cdnifa7jhnjhd" path="res://assets/enemies/1 Hell-Beast-Files/Breath/Sprites/hell-beast-breath1.png" id="1_h08qo"]
@@ -13,6 +13,11 @@
 [ext_resource type="Texture2D" uid="uid://bb13cm08e2bmk" path="res://assets/enemies/1 Hell-Beast-Files/Idle/Sprites/hell-beast-idle5.png" id="9_jrc6y"]
 [ext_resource type="Texture2D" uid="uid://bucaek4vdic62" path="res://assets/enemies/1 Hell-Beast-Files/Idle/Sprites/hell-beast-idle6.png" id="10_jg173"]
 [ext_resource type="Texture2D" uid="uid://b4d6nvaq1jcme" path="res://assets/enemies/1 Hell-Beast-Files/Burn/Spritesheet.png" id="13_v7uo1"]
+[ext_resource type="Texture2D" uid="uid://be1gsru3lh7st" path="res://assets/enemies/1 demon-Files/Sprites/Death/enemy-death-1.png" id="14_jrc6y"]
+[ext_resource type="Texture2D" uid="uid://g4m3i4jxll72" path="res://assets/enemies/1 demon-Files/Sprites/Death/enemy-death-2.png" id="15_jg173"]
+[ext_resource type="Texture2D" uid="uid://d0elqhako5b2f" path="res://assets/enemies/1 demon-Files/Sprites/Death/enemy-death-3.png" id="16_yrivk"]
+[ext_resource type="Texture2D" uid="uid://bdsm0cy42tbxv" path="res://assets/enemies/1 demon-Files/Sprites/Death/enemy-death-4.png" id="17_wyhit"]
+[ext_resource type="Texture2D" uid="uid://d3pm6k2a0ni3j" path="res://assets/enemies/1 demon-Files/Sprites/Death/enemy-death-5.png" id="18_3xtlu"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_h08qo"]
 radius = 20.0
@@ -164,6 +169,29 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v7uo1"]
 size = Vector2(40.333336, 159)
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_88diw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("14_jrc6y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_jg173")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_yrivk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_wyhit")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_3xtlu")
+}],
+"loop": true,
+"name": &"signal",
+"speed": 8.0
+}]
+
 [node name="Beast" type="CharacterBody2D" groups=["enemy"]]
 scale = Vector2(3, 3)
 collision_layer = 512
@@ -181,6 +209,7 @@ sprite_frames = SubResource("SpriteFrames_yrivk")
 animation = &"attack"
 
 [node name="Hurtbox" type="Area2D" parent="."]
+position = Vector2(3.0000002, -2)
 collision_layer = 128
 collision_mask = 64
 
@@ -192,17 +221,19 @@ shape = SubResource("CapsuleShape2D_h08qo")
 position = Vector2(-17, 0)
 
 [node name="TeleportOutEffect" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -53)
+position = Vector2(2.6666667, -51)
 sprite_frames = SubResource("SpriteFrames_wyhit")
 animation = &"teleport_out"
+frame = 5
 frame_progress = 1.0
 
 [node name="TeleportInEffect" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -53)
+position = Vector2(3, -51.333336)
 sprite_frames = SubResource("SpriteFrames_mqdh4")
 animation = &"teleport_in"
 
 [node name="TeleportOutDamage" type="Area2D" parent="." groups=["enemy_attack"]]
+position = Vector2(3.6666667, 2)
 collision_layer = 256
 collision_mask = 32
 
@@ -212,6 +243,7 @@ shape = SubResource("RectangleShape2D_v7uo1")
 disabled = true
 
 [node name="TeleportInDamage" type="Area2D" parent="." groups=["enemy_attack"]]
+position = Vector2(3.6666667, 2)
 collision_layer = 256
 collision_mask = 32
 
@@ -219,3 +251,9 @@ collision_mask = 32
 position = Vector2(-3.5, -53.5)
 shape = SubResource("RectangleShape2D_v7uo1")
 disabled = true
+
+[node name="Teleportsignal" type="AnimatedSprite2D" parent="."]
+position = Vector2(0.6666666, 3.3333335)
+sprite_frames = SubResource("SpriteFrames_88diw")
+animation = &"signal"
+frame_progress = 0.33037916

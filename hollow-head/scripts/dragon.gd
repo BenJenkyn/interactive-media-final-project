@@ -15,7 +15,7 @@ enum State {
 @export var top_limit_y: float = 80.0
 @export var start_facing_left: bool = true
 
-@export var max_health: int = 5
+@export var max_health: int = 2
 @export var big_attack_damage: int = 1
 @export var small_attack_damage: int = 1
 

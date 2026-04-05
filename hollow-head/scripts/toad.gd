@@ -26,12 +26,14 @@ extends CharacterBody2D
 @onready var hurtbox: Area2D = $Hurtbox
 @onready var attack_area: Area2D = $AttackArea
 @onready var attack_shape: CollisionShape2D = $AttackArea/CollisionShape2D
+@onready var health_warning_label: Label = $HealthWarningLabel
 
 var player: Node2D = null
 
 var hurtbox_start_pos: Vector2
 var body_collision_start_pos: Vector2
 var attack_area_start_pos: Vector2
+var health_warning_start_pos: Vector2
 
 var health: int = 0
 var is_attacking: bool = false
@@ -52,12 +54,18 @@ var big_jump_total_time: float = 0.0
 var big_jump_elapsed: float = 0.0
 var big_jump_velocity_x: float = 0.0
 
+var shown_50_percent: bool = false
+var shown_25_percent: bool = false
+var shown_10_percent: bool = false
+var warning_tween: Tween = null
+
 func _ready() -> void:
 	player = get_tree().get_first_node_in_group("player") as Node2D
 
 	hurtbox_start_pos = hurtbox.position
 	body_collision_start_pos = body_collision.position
 	attack_area_start_pos = attack_area.position
+	health_warning_start_pos = health_warning_label.position
 
 	health = max_health
 
@@ -65,6 +73,11 @@ func _ready() -> void:
 	attack_shape.disabled = true
 	attack_area.body_entered.connect(_on_attack_area_body_entered)
 	hurtbox.area_entered.connect(_on_hurtbox_area_entered)
+
+	health_warning_label.text = ""
+	health_warning_label.visible = false
+	health_warning_label.modulate = Color(1, 1, 1, 1)
+	health_warning_label.scale = Vector2(1, 1)
 
 	anim.play("idle")
 
@@ -244,11 +257,13 @@ func _apply_jump_offsets() -> void:
 	hurtbox.position = hurtbox_start_pos + Vector2(0.0, jump_hurtbox_offset_y)
 	body_collision.position = body_collision_start_pos + Vector2(0.0, jump_hurtbox_offset_y)
 	attack_area.position.y = attack_area_start_pos.y + jump_hurtbox_offset_y
+	health_warning_label.position.y = health_warning_start_pos.y + jump_hurtbox_offset_y
 
 func _reset_jump_offsets() -> void:
 	hurtbox.position = hurtbox_start_pos
 	body_collision.position = body_collision_start_pos
 	attack_area.position.y = attack_area_start_pos.y
+	health_warning_label.position = health_warning_start_pos
 
 func _update_animation() -> void:
 	if is_dead:
@@ -292,6 +307,20 @@ func take_damage(amount: int) -> void:
 
 	health -= amount
 
+	var health_percent: float = float(health) / float(max_health)
+
+	if health_percent <= 0.5 and not shown_50_percent:
+		shown_50_percent = true
+		_show_health_warning("50% HEALTH")
+
+	if health_percent <= 0.25 and not shown_25_percent:
+		shown_25_percent = true
+		_show_health_warning("25% HEALTH")
+
+	if health_percent <= 0.10 and not shown_10_percent:
+		shown_10_percent = true
+		_show_health_warning("10% HEALTH")
+
 	print("Enemy health: ", health)
 
 	anim.modulate = Color(1, 0.3, 0.3)
@@ -303,6 +332,38 @@ func take_damage(amount: int) -> void:
 
 	if health <= 0:
 		die()
+
+func _show_health_warning(text_to_show: String) -> void:
+	health_warning_label.text = text_to_show
+	health_warning_label.visible = true
+	health_warning_label.modulate = Color(1, 1, 1, 1)
+	health_warning_label.scale = Vector2(1.5, 1.5)
+	health_warning_label.position = health_warning_start_pos
+
+	if warning_tween != null:
+		warning_tween.kill()
+
+	warning_tween = create_tween()
+	warning_tween.tween_property(
+		health_warning_label,
+		"position",
+		health_warning_start_pos + Vector2(0, -20),
+		1.5
+	)
+	warning_tween.parallel().tween_property(
+		health_warning_label,
+		"modulate:a",
+		0.0,
+		1.5
+	)
+
+	await warning_tween.finished
+
+	if not is_dead:
+		health_warning_label.visible = false
+		health_warning_label.modulate = Color(1, 1, 1, 1)
+		health_warning_label.position = health_warning_start_pos
+		health_warning_label.scale = Vector2(1, 1)
 
 func die() -> void:
 	is_dead = true
