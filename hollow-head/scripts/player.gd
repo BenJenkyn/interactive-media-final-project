@@ -37,6 +37,11 @@ enum PlayerState {
 @onready var hurtbox: Area2D = $Hurtbox
 @onready var hurtbox_shape: CollisionShape2D = $Hurtbox/CollisionShape2D
 
+var pause_menu_scene = preload("res://scenes/UI/pause_menu.tscn")
+var overlay_menu: CanvasLayer = null
+var pause_toggle_lock_frames: int = 0
+var is_dead: bool = false
+
 var state: PlayerState = PlayerState.IDLE
 
 var facing: float = 1.0
@@ -60,6 +65,7 @@ func _ready() -> void:
 
 	throw_unlocked = player_state.throw_unlocked
 
+	_ensure_pause_action_binding()
 	attack_area.monitoring = false
 	attack_shape.disabled = true
 	dash_timer.one_shot = true
@@ -68,7 +74,26 @@ func _ready() -> void:
 	hurtbox.body_entered.connect(_on_hurtbox_body_entered)
 	change_state(PlayerState.IDLE)
 
+func _ensure_pause_action_binding() -> void:
+	if not InputMap.has_action("pause"):
+		InputMap.add_action("pause")
+
+	if InputMap.action_get_events("pause").is_empty():
+		var pause_event := InputEventKey.new()
+		pause_event.physical_keycode = KEY_ESCAPE
+		InputMap.action_add_event("pause", pause_event)
+
 func _physics_process(delta: float) -> void:
+	if pause_toggle_lock_frames > 0:
+		pause_toggle_lock_frames -= 1
+
+	_handle_pause_input()
+
+	if is_dead:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		return
+
 	var input_x := Input.get_axis("move_left", "move_right")
 
 	if not is_on_floor():
@@ -343,13 +368,52 @@ func spawn_projectile() -> void:
 	get_tree().current_scene.add_child(projectile)
 	projectile.global_position = projectile_spawn.global_position
 	projectile.setup(throw_facing)
+	
+func _handle_pause_input() -> void:
+	if is_dead:
+		return
 
-func unlock_throw() -> void:
-	throw_unlocked = true
-	player_state.throw_unlocked = true
-	print("Throw unlocked")
+	if pause_toggle_lock_frames > 0:
+		return
+
+	if Input.is_action_just_pressed("pause") and overlay_menu == null and not get_tree().paused:
+		_open_overlay(0)
+
+func _open_overlay(mode: int) -> void:
+	if overlay_menu != null:
+		return
+
+	var menu = pause_menu_scene.instantiate()
+	if menu.has_method("configure_mode"):
+		menu.configure_mode(mode)
+
+	if menu.has_signal("menu_closed") and not menu.menu_closed.is_connected(_on_overlay_closed):
+		menu.menu_closed.connect(_on_overlay_closed)
+
+	menu.tree_exited.connect(_on_overlay_tree_exited)
+	get_tree().current_scene.add_child(menu)
+	overlay_menu = menu
+	pause_toggle_lock_frames = 2
+	get_tree().paused = true
+
+func _on_overlay_closed() -> void:
+	overlay_menu = null
+	pause_toggle_lock_frames = 2
+
+func _on_overlay_tree_exited() -> void:
+	overlay_menu = null
+	pause_toggle_lock_frames = 2
 
 func take_damage(amount: int) -> void:
+	if amount <= 0:
+		return
+
+	if get_tree().paused:
+		return
+
+	if is_dead:
+		return
+
 	if state == PlayerState.DODGE:
 		return
 
@@ -360,14 +424,14 @@ func take_damage(amount: int) -> void:
 		return
 
 	can_take_damage = false
-	current_health -= amount
-	current_health = max(current_health, 0)
-	player_state.current_health = current_health
 
+	player_state.apply_damage(amount)
+	current_health = player_state.current_health
 	print("Player health: ", current_health)
 
-	if current_health <= 0:
+	if player_state.current_health <= 0:
 		change_state(PlayerState.DEAD)
+		_handle_player_death()
 		return
 
 	var knockback_dir := 1.0
@@ -392,10 +456,24 @@ func take_damage(amount: int) -> void:
 	if state != PlayerState.DEAD:
 		can_take_damage = true
 
+func _handle_player_death() -> void:
+	if is_dead:
+		return
+
+	is_dead = true
+	velocity = Vector2.ZERO
+	_open_overlay(1)
+
+func unlock_throw() -> void:
+	throw_unlocked = true
+	player_state.throw_unlocked = true
+	print("Throw unlocked")
+
 func heal(amount: int) -> void:
 	current_health += amount
 	current_health = min(current_health, max_health)
 	player_state.current_health = current_health
+	player_state.health_changed.emit(player_state.current_health, player_state.max_health)
 
 func _on_hurtbox_area_entered(area: Area2D) -> void:
 	if not can_take_damage:
