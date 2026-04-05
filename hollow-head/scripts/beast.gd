@@ -271,6 +271,8 @@ func die() -> void:
 	is_teleporting = false
 	has_shot = false
 	velocity = Vector2.ZERO
+	hurtbox.monitoring = false
+	hurtbox.monitorable = false
 	teleport_signal.visible = false
 	teleport_out_effect.visible = false
 	teleport_in_effect.visible = false

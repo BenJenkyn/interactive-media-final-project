@@ -368,6 +368,8 @@ func _show_health_warning(text_to_show: String) -> void:
 
 func die() -> void:
 	is_dead = true
+	hurtbox.monitoring = false
+	hurtbox.monitorable = false
 	anim.play("death")
 	await anim.animation_finished
 	queue_free()
