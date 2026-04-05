@@ -60,8 +60,9 @@ spawn_effect_scene = ExtResource("2_f7rt6")
 [node name="Player" parent="." instance=ExtResource("2_f5jb5")]
 position = Vector2(578, 356.00003)
 scale = Vector2(2.5, 2.5)
+collision_mask = 18
 
-[node name="Beast" parent="." groups=["enemy"] instance=ExtResource("6_frjko")]
+[node name="Beast" parent="." instance=ExtResource("6_frjko")]
 position = Vector2(836, 320)
 teleport_points_path = NodePath("../TeleportPoints")
 

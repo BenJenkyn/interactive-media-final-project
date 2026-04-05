@@ -193,6 +193,7 @@ func _change_state(new_state: State) -> void:
 			_set_hitbox(big_hitbox, big_hitbox_shape, false)
 			_set_hitbox(small_hitbox, small_hitbox_shape, false)
 			queue_free()
+			level_state.change_state(level_state.LevelStateEnum.LEVEL3)
 
 func _process_idle(delta: float) -> void:
 	change_direction_timer -= delta

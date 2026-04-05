@@ -307,3 +307,4 @@ func take_damage(amount: int) -> void:
 func die() -> void:
 	is_dead = true
 	queue_free()
+	level_state.change_state(level_state.LevelStateEnum.LEVEL2)
