@@ -8,13 +8,16 @@ extends CharacterBody2D
 @export var use_teleport_attack: bool = true
 @export var teleport_points_path: NodePath
 @export var teleport_damage_amount: int = 1
+@export var teleport_signal_time: float = 0.5
+@export var teleport_in_signal_time: float = 0.4
 
-@export var max_health: int = 5
+@export var max_health: int = 2
 
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var projectile_spawn: Marker2D = $ProjectileSpawn
 @onready var teleport_out_effect: AnimatedSprite2D = $TeleportOutEffect
 @onready var teleport_in_effect: AnimatedSprite2D = $TeleportInEffect
+@onready var teleport_signal: AnimatedSprite2D = $Teleportsignal
 
 @onready var teleport_out_damage: Area2D = $TeleportOutDamage
 @onready var teleport_out_damage_shape: CollisionShape2D = $TeleportOutDamage/CollisionShape2D
@@ -54,6 +57,7 @@ func _ready() -> void:
 
 	teleport_out_effect.visible = false
 	teleport_in_effect.visible = false
+	teleport_signal.visible = false
 	teleport_out_damage_shape.disabled = true
 	teleport_in_damage_shape.disabled = true
 
@@ -161,6 +165,14 @@ func _on_teleport_out_finished() -> void:
 	teleport_out_effect.visible = false
 	teleport_out_damage_shape.disabled = true
 
+	teleport_signal.global_position = pending_teleport_position + Vector2(0, -60)
+	teleport_signal.visible = true
+	teleport_signal.play("signal")
+
+	await get_tree().create_timer(teleport_in_signal_time).timeout
+
+	teleport_signal.visible = false
+
 	global_position = pending_teleport_position
 
 	if target != null:
@@ -245,6 +257,7 @@ func die() -> void:
 	is_dead = true
 	is_attacking = false
 	is_teleporting = false
+	teleport_signal.visible = false
 	teleport_out_damage_shape.disabled = true
 	teleport_in_damage_shape.disabled = true
 	queue_free()
