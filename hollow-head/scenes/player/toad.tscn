@@ -19,8 +19,14 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("1_eqe02")
 }, {
-"duration": 1.0,
+"duration": 5.0,
 "texture": ExtResource("2_ke71q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_msvjk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_msvjk")
 }, {
 "duration": 1.0,
 "texture": ExtResource("3_msvjk")
