@@ -6,6 +6,7 @@ signal player_died
 var max_health := 5
 var current_health = max_health
 var throw_unlocked := false
+var victory_count := 0
 
 func reset_health() -> void:
 	current_health = max_health
@@ -20,3 +21,6 @@ func apply_damage(amount: int) -> void:
 
 	if current_health <= 0:
 		player_died.emit()
+
+func add_victory():
+	victory_count += 1

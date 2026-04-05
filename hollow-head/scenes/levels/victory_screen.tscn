@@ -1,0 +1,124 @@
+[gd_scene load_steps=11 format=3 uid="uid://bcqytyvkkid66"]
+
+[ext_resource type="Script" uid="uid://8f4sc1oii7yo" path="res://scenes/levels/victory_screen.gd" id="1_51t1i"]
+[ext_resource type="Texture2D" uid="uid://bi1nkvscwhyit" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/environment/zaphire/sprites/zaphire1.png" id="1_fmqis"]
+[ext_resource type="Texture2D" uid="uid://dxubojqhkkitm" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/environment/zaphire/sprites/zaphire2.png" id="2_51t1i"]
+[ext_resource type="Texture2D" uid="uid://clwys1ik3kwas" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/environment/zaphire/sprites/zaphire3.png" id="3_qldvl"]
+[ext_resource type="Texture2D" uid="uid://bciw4j13e7soh" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/environment/zaphire/sprites/zaphire4.png" id="4_puyy2"]
+[ext_resource type="Texture2D" uid="uid://b48qts0me5odh" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/enemies/walker/sprites/walk2.png" id="5_s3c7b"]
+[ext_resource type="Texture2D" uid="uid://diw1jm1qrlmt4" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/enemies/walker/sprites/walk3.png" id="6_vb2hr"]
+[ext_resource type="Texture2D" uid="uid://b8ibl7fk1b5gr" path="res://assets/background/1 Gothicvania Church/ENVIRONMENT/column.png" id="7_gk7s6"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vpn25"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_fmqis")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_51t1i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_qldvl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_puyy2")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dfe5h"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_s3c7b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_vb2hr")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Node" type="Node"]
+script = ExtResource("1_51t1i")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.33476073, 0.0013606563, 0.7023708, 1)
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -132.0
+offset_top = 210.0
+offset_right = 133.0
+offset_bottom = 298.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 64
+text = "VICTORY"
+
+[node name="MainMenuButton" type="Button" parent="CanvasLayer"]
+offset_left = 488.0
+offset_top = 387.0
+offset_right = 670.0
+offset_bottom = 440.0
+theme_override_font_sizes/font_size = 32
+text = "Main Menu"
+
+[node name="VictoryGem" type="AnimatedSprite2D" parent="CanvasLayer"]
+position = Vector2(384, 256)
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_vpn25")
+frame = 3
+frame_progress = 1.0
+
+[node name="VictoryGem2" type="AnimatedSprite2D" parent="CanvasLayer"]
+position = Vector2(776, 258)
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_vpn25")
+frame = 3
+frame_progress = 1.0
+flip_h = true
+
+[node name="DancingNpc" type="AnimatedSprite2D" parent="CanvasLayer"]
+position = Vector2(504, 360)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_dfe5h")
+frame_progress = 0.4646699
+
+[node name="DancingNpc2" type="AnimatedSprite2D" parent="CanvasLayer"]
+position = Vector2(656, 360)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_dfe5h")
+frame_progress = 0.59764194
+flip_h = true
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 383.0
+grow_vertical = 2
+texture = ExtResource("7_gk7s6")
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -371.0
+grow_horizontal = 0
+grow_vertical = 2
+texture = ExtResource("7_gk7s6")
+flip_h = true
