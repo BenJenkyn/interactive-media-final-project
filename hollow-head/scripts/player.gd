@@ -23,9 +23,10 @@ enum PlayerState {
 @export var max_health: int = 5
 @export var invincibility_time: float = 0.5
 
-@export var contact_knockback_x: float = 220.0
-@export var contact_knockback_y: float = -160.0
+@export var contact_knockback_x: float = 500.0
+@export var contact_knockback_y: float = -400.0
 @export var hurt_time: float = 0.18
+@export var knockback_separation_distance: float = 8.0
 
 @export var throw_unlocked: bool = false
 
@@ -368,7 +369,7 @@ func spawn_projectile() -> void:
 	get_tree().current_scene.add_child(projectile)
 	projectile.global_position = projectile_spawn.global_position
 	projectile.setup(throw_facing)
-	
+
 func _handle_pause_input() -> void:
 	if is_dead:
 		return
@@ -434,10 +435,11 @@ func take_damage(amount: int) -> void:
 		_handle_player_death()
 		return
 
-	var knockback_dir := 1.0
-	if global_position.x < hurt_source_x:
-		knockback_dir = -1.0
+	var knockback_dir: float = sign(global_position.x - hurt_source_x)
+	if knockback_dir == 0.0:
+		knockback_dir = -facing
 
+	global_position.x += knockback_dir * knockback_separation_distance
 	velocity.x = contact_knockback_x * knockback_dir
 	velocity.y = contact_knockback_y
 
@@ -480,6 +482,10 @@ func _on_hurtbox_area_entered(area: Area2D) -> void:
 		return
 
 	if area.is_in_group("enemy_attack"):
+		if area is Node2D:
+			hurt_source_x = area.global_position.x
+		else:
+			hurt_source_x = global_position.x
 		take_damage(1)
 
 func _on_hurtbox_body_entered(body: Node) -> void:
