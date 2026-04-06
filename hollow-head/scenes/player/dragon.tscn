@@ -1,7 +1,8 @@
-[gd_scene load_steps=50 format=3 uid="uid://bl4wv2qpthcg1"]
+[gd_scene load_steps=61 format=3 uid="uid://bl4wv2qpthcg1"]
 
 [ext_resource type="Script" uid="uid://b5eaed0u3i30w" path="res://scripts/dragon.gd" id="1_n5a5n"]
 [ext_resource type="Texture2D" uid="uid://buvrj6ok5ex0p" path="res://assets/enemies/1 demon-Files/Sprites/Idle/idle1.png" id="2_4qq75"]
+[ext_resource type="Texture2D" uid="uid://mvimc1opibkl" path="res://assets/background/1 Gothicvania Swamp files/Sprites/Enemy-Death/spritesheet.png" id="2_7vju6"]
 [ext_resource type="Texture2D" uid="uid://b82e3j7bp5ncr" path="res://assets/enemies/1 demon-Files/Sprites/Idle/idle2.png" id="3_it3oo"]
 [ext_resource type="Texture2D" uid="uid://dicjjjfyw5d75" path="res://assets/enemies/1 demon-Files/Sprites/Idle/idle3.png" id="4_2icv1"]
 [ext_resource type="Texture2D" uid="uid://cxolm0ugb7vq0" path="res://assets/enemies/1 demon-Files/Sprites/Idle/idle4.png" id="5_yjbwg"]
@@ -11,8 +12,11 @@
 [ext_resource type="Texture2D" uid="uid://cvispwltku5cj" path="res://assets/enemies/1 demon-Files/Spritesheets/breath-fire.png" id="27_8fn3l"]
 [ext_resource type="Texture2D" uid="uid://cb536hrvx0r4p" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame2.png" id="27_pkmt2"]
 [ext_resource type="Texture2D" uid="uid://d0nclf8cmd1ul" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame3.png" id="28_td5lo"]
+[ext_resource type="PackedScene" uid="uid://b1h6kleyhrkvn" path="res://scenes/sfx/death_sound.tscn" id="29_44nqu"]
 [ext_resource type="Texture2D" uid="uid://62jlnhx33qwy" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame4.png" id="29_surjs"]
 [ext_resource type="Texture2D" uid="uid://d00hab81ufaxy" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame5.png" id="30_d8uvq"]
+[ext_resource type="AudioStream" uid="uid://cq0yxm2ct883c" path="res://assets/sound_effects/fire.mp3" id="30_polqc"]
+[ext_resource type="AudioStream" uid="uid://wr608snmdgtd" path="res://assets/sfx/SpaceShooter/explosion.wav" id="31_744fr"]
 [ext_resource type="Texture2D" uid="uid://c76nmw3n4d14y" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame6.png" id="31_cawtp"]
 [ext_resource type="Texture2D" uid="uid://sxc0pqxu0e0u" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame7.png" id="32_285w4"]
 [ext_resource type="Texture2D" uid="uid://bdrfu34eq6dr5" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame8.png" id="33_7xd1k"]
@@ -32,8 +36,55 @@
 radius = 26.0
 height = 78.0
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_x3m8q"]
+atlas = ExtResource("2_7vju6")
+region = Rect2(0, 0, 39, 49)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_exu8r"]
+atlas = ExtResource("2_7vju6")
+region = Rect2(39, 0, 39, 49)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uw6jn"]
+atlas = ExtResource("2_7vju6")
+region = Rect2(78, 0, 39, 49)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dimx8"]
+atlas = ExtResource("2_7vju6")
+region = Rect2(117, 0, 39, 49)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elibb"]
+atlas = ExtResource("2_7vju6")
+region = Rect2(156, 0, 39, 49)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bwahy"]
+atlas = ExtResource("2_7vju6")
+region = Rect2(195, 0, 39, 49)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_wi5n2"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x3m8q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_exu8r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uw6jn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dimx8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elibb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bwahy")
+}],
+"loop": false,
+"name": &"dead",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("2_4qq75")
@@ -262,10 +313,23 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8fn3l"]
+radius = 30.0
+height = 102.00001
+
 [node name="dragon" type="CharacterBody2D" groups=["enemy"]]
-collision_layer = 2
-collision_mask = 29
+collision_layer = 512
+collision_mask = 16
 script = ExtResource("1_n5a5n")
+
+[node name="HealthWarningLabel" type="Label" parent="."]
+offset_left = -47.0
+offset_top = -69.0
+offset_right = -46.0
+offset_bottom = -41.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-14, 1)
@@ -274,7 +338,6 @@ shape = SubResource("CapsuleShape2D_47cfb")
 [node name="Idle" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_wi5n2")
 animation = &"idle"
-frame_progress = 0.85304433
 offset = Vector2(0, -9)
 
 [node name="BigAttack" type="AnimatedSprite2D" parent="."]
@@ -286,17 +349,19 @@ animation = &"attack"
 position = Vector2(-137, 45)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_7xd1k")
-animation = &"flame"
+animation = &"new_animation"
 
 [node name="Hurtbox" type="Area2D" parent="."]
-collision_layer = 2
+collision_layer = 128
+collision_mask = 64
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2(-14, 1)
 shape = SubResource("CapsuleShape2D_47cfb")
 
-[node name="BigHitbox" type="Area2D" parent="."]
-collision_layer = 2
+[node name="BigHitbox" type="Area2D" parent="." groups=["enemy_attack"]]
+collision_layer = 256
+collision_mask = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BigHitbox"]
 position = Vector2(-128, 52)
@@ -307,5 +372,27 @@ shape = SubResource("CapsuleShape2D_mgwti")
 position = Vector2(-83, 15)
 sprite_frames = SubResource("SpriteFrames_x3m8q")
 animation = &"flame"
+frame = 3
+frame_progress = 0.12750764
+
+[node name="SmallHitbox" type="Area2D" parent="." groups=["enemy_attack"]]
+collision_layer = 256
+collision_mask = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SmallHitbox"]
+position = Vector2(-75, 22)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_8fn3l")
+
+[node name="SoundEffects" type="Node2D" parent="."]
+
+[node name="DeathSound" parent="SoundEffects" instance=ExtResource("29_44nqu")]
+
+[node name="FireBreathSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("30_polqc")
+
+[node name="RedFireBreathSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("31_744fr")
+volume_db = 10.0
 
 [connection signal="animation_finished" from="BigAttack" to="." method="_on_big_attack_animation_finished"]

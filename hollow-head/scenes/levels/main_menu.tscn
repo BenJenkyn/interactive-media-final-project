@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://co3rijh2nllys"]
+[gd_scene load_steps=4 format=3 uid="uid://co3rijh2nllys"]
 
 [ext_resource type="Script" uid="uid://bulkrp38gw7rh" path="res://scenes/levels/main_menu.gd" id="1_721jg"]
 [ext_resource type="Texture2D" uid="uid://bweae3n8f5yaf" path="res://assets/background/1 Gothicvania Swamp files/PSD/preview.png" id="1_l6cm7"]
+[ext_resource type="AudioStream" uid="uid://cw1vwckw6ns2b" path="res://assets/music/Menu Theme.wav" id="3_721jg"]
 
 [node name="MainMenu" type="Node2D"]
 script = ExtResource("1_721jg")
@@ -17,16 +18,50 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_l6cm7")
 
-[node name="Label" type="Label" parent="CanvasLayer"]
-offset_left = 515.0
-offset_top = 251.0
-offset_right = 633.0
-offset_bottom = 274.0
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -271.0
+offset_top = -213.0
+offset_right = 271.0
+offset_bottom = 213.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.42745098, 0.42745098, 0.42745098, 0.50980395)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -234.5
+offset_top = -87.5
+offset_right = 234.5
+offset_bottom = 87.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleLabel" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 64
 text = "HOLLOW HEAD"
 
-[node name="Label2" type="Label" parent="CanvasLayer"]
-offset_left = 504.0
-offset_top = 385.0
-offset_right = 656.0
-offset_bottom = 408.0
+[node name="StartButton" type="Button" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 32
 text = "Press Enter To Start"
+
+[node name="VictoryCountLabel" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 24
+
+[node name="Music" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_721jg")
+autoplay = true

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://djugdi7y3053r"
+path="res://.godot/imported/hit.wav-8e7965ee1385629478d5e65fd92b4cf9.sample"
+
+[deps]
+
+source_file="res://assets/sfx/Gothicvania Church/hit.wav"
+dest_files=["res://.godot/imported/hit.wav-8e7965ee1385629478d5e65fd92b4cf9.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

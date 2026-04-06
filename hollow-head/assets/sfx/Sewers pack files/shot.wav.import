@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dxb68u0nlw05c"
+path="res://.godot/imported/shot.wav-e507f21f37a78f7faf2617cbf3464dd8.sample"
+
+[deps]
+
+source_file="res://assets/sfx/Sewers pack files/shot.wav"
+dest_files=["res://.godot/imported/shot.wav-e507f21f37a78f7faf2617cbf3464dd8.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

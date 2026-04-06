@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://og6ahttkdigj"
+path="res://.godot/imported/thorn.wav-7881ab108a52500e1f60957bb99bb179.sample"
+
+[deps]
+
+source_file="res://assets/sfx/Meta data assets files/thorn.wav"
+dest_files=["res://.godot/imported/thorn.wav-7881ab108a52500e1f60957bb99bb179.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

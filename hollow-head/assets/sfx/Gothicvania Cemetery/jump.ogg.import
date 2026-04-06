@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://diwsyl3nb8mv8"
+path="res://.godot/imported/jump.ogg-9cc99e0f2b3af91df645e0ac66b8811d.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/sfx/Gothicvania Cemetery/jump.ogg"
+dest_files=["res://.godot/imported/jump.ogg-9cc99e0f2b3af91df645e0ac66b8811d.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

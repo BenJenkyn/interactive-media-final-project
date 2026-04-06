@@ -1,29 +1,35 @@
 extends CharacterBody2D
 
-enum State { 
-	IDLE, 
+enum State {
+	IDLE,
 	HIGH_DASH_ATTACK,
-	CLOSE_ATTACK, 
-	DEAD 
+	CLOSE_ATTACK,
+	DEAD
 }
 
 @export var move_speed: float = 60.0
 @export var direction_change_time_min: float = 1.0
 @export var direction_change_time_max: float = 2.5
-@export var attack_time_min: float = 4.0
-@export var attack_time_max: float = 8.0
+@export var attack_time_min: float = 2.0
+@export var attack_time_max: float = 4.0
 @export var top_limit_y: float = 80.0
+@export var left_limit_x: float = -INF
+@export var right_limit_x: float = INF
+@export var bottom_limit_y: float = INF
 @export var start_facing_left: bool = true
-@export var normal_attack_chance: float = 0.85
 
-@export var attack_hitbox_start_frame: int = 6
+@export var max_health: int = 15
+@export var big_attack_damage: int = 1
+@export var small_attack_damage: int = 1
+
 @export var big_flame_start_frame: int = 6
 @export var big_flame_end_frame: int = 15
 @export var big_hitbox_start_frame: int = 7
 @export var big_hitbox_end_frame: int = 14
+
 @export var waypoint_radius: float = 80.0
 @export var high_dash_attack_dash_speed: float = 400.0
-@export var high_dash_attack_dash_start_frame: int = 3
+
 @export var close_attack_speed: float = 150.0
 @export var close_attack_range: float = 200.0
 @export var close_attack_flame_start_frame: int = 6
@@ -38,52 +44,110 @@ enum State {
 
 @onready var hurtbox: Area2D = $Hurtbox
 @onready var hurtbox_shape: CollisionShape2D = $Hurtbox/CollisionShape2D
+
 @onready var big_hitbox: Area2D = $BigHitbox
 @onready var big_hitbox_shape: CollisionShape2D = $BigHitbox/CollisionShape2D
+
+@onready var small_hitbox: Area2D = $SmallHitbox
+@onready var small_hitbox_shape: CollisionShape2D = $SmallHitbox/CollisionShape2D
+
+@onready var health_warning_label: Label = $HealthWarningLabel
+
+# Sound Effects
+@onready var death_sound := $SoundEffects/DeathSound
+@onready var fire_breath_sound := $SoundEffects/FireBreathSound
+@onready var red_fire_breath_sound := $SoundEffects/RedFireBreathSound
 
 var state: State = State.IDLE
 var move_direction: Vector2 = Vector2.RIGHT
 var change_direction_timer: float = 0.0
 var attack_timer: float = 0.0
-var health: int = 3
+var health: int = 0
 var assigned_waypoint: Node2D = null
 var dash_velocity: Vector2 = Vector2.ZERO
 var close_attack_target: Vector2 = Vector2.ZERO
 var close_attack_returning: bool = false
+var is_dead: bool = false
+
+var big_attack_hit_targets: Array[Node] = []
+var small_attack_hit_targets: Array[Node] = []
+
+var health_warning_offset: Vector2
+var shown_50_percent: bool = false
+var shown_25_percent: bool = false
+var shown_10_percent: bool = false
+var warning_tween: Tween = null
 
 func _ready() -> void:
 	randomize()
+	health = max_health
 	move_direction = Vector2.LEFT if start_facing_left else Vector2.RIGHT
+
+	hurtbox.area_entered.connect(_on_hurtbox_area_entered)
+
+	big_hitbox.body_entered.connect(_on_big_hitbox_body_entered)
+	big_hitbox.area_entered.connect(_on_big_hitbox_area_entered)
+
+	small_hitbox.body_entered.connect(_on_small_hitbox_body_entered)
+	small_hitbox.area_entered.connect(_on_small_hitbox_area_entered)
+
+	health_warning_offset = health_warning_label.position
+	health_warning_label.top_level = true
+	health_warning_label.text = ""
+	health_warning_label.visible = false
+	health_warning_label.modulate = Color(1, 1, 1, 1)
+	health_warning_label.scale = Vector2(1, 1)
+	_update_warning_label_position()
+
 	reset_direction_timer()
 	reset_attack_timer()
 	_change_state(State.IDLE)
 	_assign_nearest_waypoint()
 
 func _physics_process(delta: float) -> void:
+	if is_dead:
+		return
+
+	if health_warning_label.visible:
+		_update_warning_label_position()
+
 	match state:
 		State.IDLE:
 			_process_idle(delta)
+
 		State.HIGH_DASH_ATTACK:
 			velocity = dash_velocity
 			velocity.y = 0.0
 			_update_attack_boxes_and_flame()
+
 		State.CLOSE_ATTACK:
 			_process_close_attack(delta)
 
+		State.DEAD:
+			velocity = Vector2.ZERO
+
 	move_and_slide()
 	_enforce_bounds()
+
+	if health_warning_label.visible:
+		_update_warning_label_position()
 
 func _assign_nearest_waypoint() -> void:
 	var waypoints := get_tree().get_nodes_in_group("waypoints")
 	if waypoints.is_empty():
 		return
+
 	var nearest: Node2D = null
 	var nearest_dist := INF
+
 	for wp in waypoints:
 		var d: float = global_position.distance_to(wp.global_position)
 		if d < nearest_dist:
 			nearest_dist = d
 			nearest = wp
+
+	if nearest == null:
+		return
 
 	var is_right := nearest.name.contains("Right")
 	var side := "Right" if is_right else "Left"
@@ -95,18 +159,16 @@ func _assign_nearest_waypoint() -> void:
 			assigned_waypoint = wp
 			return
 
-# ── State transitions ──────────────────────────────────────────
-
 func _change_state(new_state: State) -> void:
-	# --- exit current state ---
 	match state:
 		State.HIGH_DASH_ATTACK:
 			high_dash_attack_sprite.stop()
 			blue_flame_sprite.visible = false
 			blue_flame_sprite.stop()
+			fire_breath_sound.stop()
 			_assign_nearest_waypoint()
-			
 			update_facing()
+
 		State.CLOSE_ATTACK:
 			high_dash_attack_sprite.stop()
 			orange_flame_sprite.visible = false
@@ -116,14 +178,17 @@ func _change_state(new_state: State) -> void:
 
 	state = new_state
 
-	# --- disable all hitboxes and sprites ---
 	_set_hitbox(big_hitbox, big_hitbox_shape, false)
+	_set_hitbox(small_hitbox, small_hitbox_shape, false)
+
 	idle_sprite.visible = false
 	high_dash_attack_sprite.visible = false
 	blue_flame_sprite.visible = false
 	orange_flame_sprite.visible = false
 
-	# --- enter new state ---
+	big_attack_hit_targets.clear()
+	small_attack_hit_targets.clear()
+
 	match state:
 		State.IDLE:
 			hurtbox.monitoring = true
@@ -138,25 +203,37 @@ func _change_state(new_state: State) -> void:
 			high_dash_attack_sprite.visible = true
 			high_dash_attack_sprite.play("attack")
 			high_dash_attack_sprite.frame = 0
-			var center := get_viewport_rect().size / 2
+			fire_breath_sound.play(1.2)
+
+			var center := get_viewport_rect().size / 2.0
 			var to_center := (center - global_position).normalized()
-			dash_velocity = Vector2(to_center.x, 0) * high_dash_attack_dash_speed
+			dash_velocity = Vector2(to_center.x, 0.0) * high_dash_attack_dash_speed
 			move_direction = to_center
 
 		State.CLOSE_ATTACK:
 			var player = get_tree().get_first_node_in_group("player")
 			if player != null:
 				close_attack_target = player.global_position
-				high_dash_attack_sprite.visible = true
-				high_dash_attack_sprite.play("attack")
-				high_dash_attack_sprite.frame = 0
-				close_attack_returning = false
+
+			red_fire_breath_sound.play()
+			high_dash_attack_sprite.visible = true
+			high_dash_attack_sprite.play("attack")
+			high_dash_attack_sprite.frame = 0
+			close_attack_returning = false
 
 		State.DEAD:
+			_stop_player_movement()
 			_set_hitbox(hurtbox, hurtbox_shape, false)
+			_set_hitbox(big_hitbox, big_hitbox_shape, false)
+			_set_hitbox(small_hitbox, small_hitbox_shape, false)
+			velocity = Vector2.ZERO
+			idle_sprite.visible = true
+			death_sound.play()
+			idle_sprite.play("dead")
+			health_warning_label.visible = false
+			await idle_sprite.animation_finished
+			level_state.change_state(level_state.LevelStateEnum.UPGRADE_BETWEEN_2_3)
 			queue_free()
-
-# ── IDLE processing ────────────────────────────────────────────
 
 func _process_idle(delta: float) -> void:
 	change_direction_timer -= delta
@@ -169,17 +246,17 @@ func _process_idle(delta: float) -> void:
 	if attack_timer <= 0.0:
 		var player = get_tree().get_first_node_in_group("player")
 		var attack_choice: State = State.HIGH_DASH_ATTACK
-		
+
 		if player != null:
-			var distance_to_player := global_position.distance_to(player.global_position)
+			var distance_to_player: float = global_position.distance_to(player.global_position)
 			if distance_to_player < close_attack_range and randf() < 0.5:
 				attack_choice = State.CLOSE_ATTACK
-		
+
 		_change_state(attack_choice)
 		return
 
 	velocity = move_direction * move_speed
-	
+
 	if assigned_waypoint != null:
 		var to_waypoint := assigned_waypoint.global_position - global_position
 		if to_waypoint.length() > waypoint_radius:
@@ -190,20 +267,19 @@ func _process_idle(delta: float) -> void:
 		move_direction = move_direction.bounce(get_wall_normal()).normalized()
 		reset_direction_timer()
 
-# ── Attack box / flame logic ───────────────────────────────────
-
 func _process_close_attack(delta: float) -> void:
 	if not close_attack_returning:
 		var to_target := close_attack_target - global_position
-		if to_target.length() > 20.0:
+		var should_pause_for_fire: bool = high_dash_attack_sprite.frame >= close_attack_flame_start_frame - 1
+
+		if to_target.length() > 20.0 and not should_pause_for_fire:
 			velocity = to_target.normalized() * close_attack_speed
 			move_direction = to_target.normalized()
 		else:
 			velocity = Vector2.ZERO
-			if high_dash_attack_sprite.frame >= close_attack_flame_start_frame:
+			if high_dash_attack_sprite.frame >= close_attack_flame_end_frame:
 				close_attack_returning = true
 	else:
-		# Return to waypoint
 		if assigned_waypoint != null:
 			var to_waypoint := assigned_waypoint.global_position - global_position
 			if to_waypoint.length() > 10.0:
@@ -222,6 +298,7 @@ func _update_attack_boxes_and_flame() -> void:
 				var hit_active := f >= big_hitbox_start_frame and f <= big_hitbox_end_frame
 
 				_set_hitbox(big_hitbox, big_hitbox_shape, hit_active)
+				_set_hitbox(small_hitbox, small_hitbox_shape, false)
 
 				if flame_active:
 					blue_flame_sprite.visible = true
@@ -232,15 +309,18 @@ func _update_attack_boxes_and_flame() -> void:
 					blue_flame_sprite.stop()
 			else:
 				_set_hitbox(big_hitbox, big_hitbox_shape, false)
+				_set_hitbox(small_hitbox, small_hitbox_shape, false)
 				blue_flame_sprite.visible = false
 				blue_flame_sprite.stop()
+
 		State.CLOSE_ATTACK:
 			if high_dash_attack_sprite.animation == "attack":
 				var f := high_dash_attack_sprite.frame
 				var flame_active := f >= close_attack_flame_start_frame and f <= close_attack_flame_end_frame
 				var hit_active := f >= close_attack_hitbox_start_frame and f <= close_attack_hitbox_end_frame
 
-				_set_hitbox(big_hitbox, big_hitbox_shape, hit_active)
+				_set_hitbox(small_hitbox, small_hitbox_shape, hit_active)
+				_set_hitbox(big_hitbox, big_hitbox_shape, false)
 
 				if flame_active:
 					orange_flame_sprite.visible = true
@@ -250,18 +330,45 @@ func _update_attack_boxes_and_flame() -> void:
 					orange_flame_sprite.visible = false
 					orange_flame_sprite.stop()
 			else:
+				_set_hitbox(small_hitbox, small_hitbox_shape, false)
 				_set_hitbox(big_hitbox, big_hitbox_shape, false)
 				orange_flame_sprite.visible = false
 				orange_flame_sprite.stop()
 
-# ── Helpers ────────────────────────────────────────────────────
-
 func _enforce_bounds() -> void:
+	if not is_inf(left_limit_x) and global_position.x < left_limit_x:
+		global_position.x = left_limit_x
+		if move_direction.x < 0.0:
+			move_direction.x = abs(move_direction.x)
+			move_direction = move_direction.normalized()
+
+		if state == State.IDLE:
+			reset_direction_timer()
+
+	if not is_inf(right_limit_x) and global_position.x > right_limit_x:
+		global_position.x = right_limit_x
+		if move_direction.x > 0.0:
+			move_direction.x = -abs(move_direction.x)
+			move_direction = move_direction.normalized()
+
+		if state == State.IDLE:
+			reset_direction_timer()
+
 	if global_position.y < top_limit_y:
 		global_position.y = top_limit_y
 		if move_direction.y < 0.0:
 			move_direction.y = abs(move_direction.y)
 			move_direction = move_direction.normalized()
+
+		if state == State.IDLE:
+			reset_direction_timer()
+
+	if not is_inf(bottom_limit_y) and global_position.y > bottom_limit_y:
+		global_position.y = bottom_limit_y
+		if move_direction.y > 0.0:
+			move_direction.y = -abs(move_direction.y)
+			move_direction = move_direction.normalized()
+
 		if state == State.IDLE:
 			reset_direction_timer()
 
@@ -274,8 +381,10 @@ func pick_new_direction() -> void:
 	var x := randf_range(-1.0, 1.0)
 	var y := randf_range(-0.8, 0.8)
 	move_direction = Vector2(x, y).normalized()
+
 	if move_direction == Vector2.ZERO:
 		move_direction = Vector2.LEFT if start_facing_left else Vector2.RIGHT
+
 	if global_position.y <= top_limit_y + 8.0 and move_direction.y < 0.0:
 		move_direction.y = abs(move_direction.y)
 		move_direction = move_direction.normalized()
@@ -289,14 +398,153 @@ func reset_attack_timer() -> void:
 func update_facing() -> void:
 	scale.x = -scale.x
 
+func _stop_player_movement() -> void:
+	var player = get_tree().get_first_node_in_group("player")
+	if player == null:
+		return
+
+	if player.has_method("set_movement_locked"):
+		player.set_movement_locked(true)
+
 func take_damage(amount: int) -> void:
+	if is_dead:
+		return
+
 	health -= amount
+
+	var health_percent: float = float(health) / float(max_health)
+
+	if health_percent <= 0.5 and not shown_50_percent:
+		shown_50_percent = true
+		_show_health_warning("50% HEALTH")
+
+	if health_percent <= 0.25 and not shown_25_percent:
+		shown_25_percent = true
+		_show_health_warning("25% HEALTH")
+
+	if health_percent <= 0.10 and not shown_10_percent:
+		shown_10_percent = true
+		_show_health_warning("10% HEALTH")
+
+	print("Dragon health: ", health)
+
+	idle_sprite.modulate = Color(1, 0.3, 0.3)
+	high_dash_attack_sprite.modulate = Color(1, 0.3, 0.3)
+
+	await get_tree().create_timer(0.1).timeout
+
+	if not is_dead:
+		idle_sprite.modulate = Color(1, 1, 1)
+		high_dash_attack_sprite.modulate = Color(1, 1, 1)
+
 	if health <= 0:
+		is_dead = true
 		_change_state(State.DEAD)
 
-# ── Animation signals ──────────────────────────────────────────
+func _show_health_warning(text_to_show: String) -> void:
+	health_warning_label.text = text_to_show
+	health_warning_label.visible = true
+	health_warning_label.modulate = Color(1, 1, 1, 1)
+	health_warning_label.scale = Vector2(1.5, 1.5)
 
-# Used for high dash attack
+	if warning_tween != null:
+		warning_tween.kill()
+
+	_update_warning_label_position()
+
+	var start_pos: Vector2 = global_position + health_warning_offset
+	var end_pos: Vector2 = start_pos + Vector2(0.0, -20.0)
+
+	health_warning_label.global_position = start_pos
+
+	warning_tween = create_tween()
+	warning_tween.tween_property(
+		health_warning_label,
+		"global_position",
+		end_pos,
+		1.5
+	)
+	warning_tween.parallel().tween_property(
+		health_warning_label,
+		"modulate:a",
+		0.0,
+		1.5
+	)
+
+	await warning_tween.finished
+
+	if not is_dead:
+		health_warning_label.visible = false
+		health_warning_label.modulate = Color(1, 1, 1, 1)
+		health_warning_label.scale = Vector2(1, 1)
+		_update_warning_label_position()
+
+func _update_warning_label_position() -> void:
+	health_warning_label.global_position = global_position + health_warning_offset
+
+func _damage_node_once(target: Node, damage: int, hit_list: Array[Node]) -> void:
+	if target == null:
+		return
+
+	if target in hit_list:
+		return
+
+	hit_list.append(target)
+
+	if target.has_method("take_damage"):
+		target.take_damage(damage)
+	elif target.get_parent() != null and target.get_parent().has_method("take_damage"):
+		target.get_parent().take_damage(damage)
+
+func _get_player_attack_damage(area: Area2D) -> int:
+	if area == null:
+		return 1
+
+	var owner_node := area.owner
+	if owner_node != null and owner_node.has_method("get_attack_damage"):
+		return owner_node.get_attack_damage()
+
+	var parent_node := area.get_parent()
+	if parent_node != null and parent_node.has_method("get_attack_damage"):
+		return parent_node.get_attack_damage()
+
+	return 1
+
+func _on_hurtbox_area_entered(area: Area2D) -> void:
+	if is_dead:
+		return
+
+	if area.is_in_group("player_attack"):
+		take_damage(_get_player_attack_damage(area))
+
+func _on_big_hitbox_body_entered(body: Node) -> void:
+	if is_dead:
+		return
+
+	if body.is_in_group("player"):
+		_damage_node_once(body, big_attack_damage, big_attack_hit_targets)
+
+func _on_big_hitbox_area_entered(area: Area2D) -> void:
+	if is_dead:
+		return
+
+	if area.is_in_group("player_hurtbox"):
+		_damage_node_once(area, big_attack_damage, big_attack_hit_targets)
+
+func _on_small_hitbox_body_entered(body: Node) -> void:
+	if is_dead:
+		return
+
+	if body.is_in_group("player"):
+		_damage_node_once(body, small_attack_damage, small_attack_hit_targets)
+
+func _on_small_hitbox_area_entered(area: Area2D) -> void:
+	if is_dead:
+		return
+
+	if area.is_in_group("player_hurtbox"):
+		_damage_node_once(area, small_attack_damage, small_attack_hit_targets)
+
 func _on_big_attack_animation_finished() -> void:
 	if state == State.HIGH_DASH_ATTACK:
 		_change_state(State.IDLE)

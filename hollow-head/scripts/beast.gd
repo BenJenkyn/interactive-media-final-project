@@ -1,5 +1,12 @@
 extends CharacterBody2D
 
+enum State {
+	IDLE,
+	ATTACKING,
+	TELEPORTING,
+	DEAD
+}
+
 @export var gravity: float = 900.0
 @export var attack_cooldown: float = 2.0
 @export var shoot_frame: int = 3
@@ -8,31 +15,58 @@ extends CharacterBody2D
 @export var use_teleport_attack: bool = true
 @export var teleport_points_path: NodePath
 @export var teleport_damage_amount: int = 1
+@export var teleport_signal_time: float = 0.5
+@export var teleport_in_signal_time: float = 0.7
+@export_range(0.0, 1.0, 0.01) var teleport_to_player_chance: float = 0.5
+
+@export var fireballs_per_attack: int = 3
+@export var time_between_fireballs: float = 0.25
+
+@export var max_health: int = 30
 
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var projectile_spawn: Marker2D = $ProjectileSpawn
 @onready var teleport_out_effect: AnimatedSprite2D = $TeleportOutEffect
 @onready var teleport_in_effect: AnimatedSprite2D = $TeleportInEffect
+@onready var teleport_signal: AnimatedSprite2D = $Teleportsignal
+@onready var death_animation: AnimatedSprite2D = $DeathAnimation
+
+# Sound Effects
+@onready var death_sound: AudioStreamPlayer2D = $SoundEffects/DeathSound
+@onready var teleport_sound: AudioStreamPlayer2D = $SoundEffects/TeleportSound
 
 @onready var teleport_out_damage: Area2D = $TeleportOutDamage
 @onready var teleport_out_damage_shape: CollisionShape2D = $TeleportOutDamage/CollisionShape2D
 @onready var teleport_in_damage: Area2D = $TeleportInDamage
 @onready var teleport_in_damage_shape: CollisionShape2D = $TeleportInDamage/CollisionShape2D
 
+@onready var hurtbox: Area2D = $Hurtbox
+@onready var health_warning_label: Label = $HealthWarningLabel
+
+var current_state: State = State.IDLE
 var target: Node2D = null
 var facing: float = 1.0
-var is_attacking: bool = false
 var has_shot: bool = false
 var attack_timer: float = 0.0
 
-var is_teleporting: bool = false
 var pending_teleport_position: Vector2 = Vector2.ZERO
 var teleport_points: Array[Marker2D] = []
 var last_teleport_index: int = -1
 var teleport_hit_targets: Array[Node] = []
 
+var current_health: int = 0
+
+var health_warning_start_pos: Vector2
+var shown_50_percent: bool = false
+var shown_25_percent: bool = false
+var shown_10_percent: bool = false
+var warning_tween: Tween = null
+
 func _ready() -> void:
+	current_health = max_health
+
 	anim.animation_finished.connect(_on_animation_finished)
+	death_animation.animation_finished.connect(_on_death_animation_finished)
 	teleport_out_effect.animation_finished.connect(_on_teleport_out_finished)
 	teleport_in_effect.animation_finished.connect(_on_teleport_in_finished)
 
@@ -41,10 +75,20 @@ func _ready() -> void:
 	teleport_out_damage.area_entered.connect(_on_teleport_damage_area_entered)
 	teleport_in_damage.area_entered.connect(_on_teleport_damage_area_entered)
 
+	hurtbox.area_entered.connect(_on_hurtbox_area_entered)
+
 	teleport_out_effect.visible = false
 	teleport_in_effect.visible = false
+	teleport_signal.visible = false
+	death_animation.visible = false
 	teleport_out_damage_shape.disabled = true
 	teleport_in_damage_shape.disabled = true
+
+	health_warning_start_pos = health_warning_label.position
+	health_warning_label.text = ""
+	health_warning_label.visible = false
+	health_warning_label.modulate = Color(1, 1, 1, 1)
+	health_warning_label.scale = Vector2(1, 1)
 
 	anim.play("idle")
 	attack_timer = attack_cooldown
@@ -72,23 +116,109 @@ func _physics_process(delta: float) -> void:
 
 	velocity.x = 0.0
 
-	if target != null and not is_teleporting:
-		face_target()
-
-	if not is_attacking and not is_teleporting:
-		attack_timer -= delta
-		if attack_timer <= 0.0:
-			if use_teleport_attack:
-				start_teleport_attack()
-			else:
-				start_attack()
-
-	if is_attacking and not is_teleporting:
-		if anim.animation == "attack" and anim.frame >= shoot_frame and not has_shot:
-			spawn_fireball()
-			has_shot = true
+	match current_state:
+		State.IDLE:
+			update_idle(delta)
+		State.ATTACKING:
+			update_attacking(delta)
+		State.TELEPORTING:
+			update_teleporting(delta)
+		State.DEAD:
+			return
 
 	move_and_slide()
+
+func update_idle(delta: float) -> void:
+	if target != null:
+		face_target()
+
+	attack_timer -= delta
+	if attack_timer <= 0.0:
+		if use_teleport_attack:
+			transition_to_state(State.TELEPORTING)
+			start_teleport_attack()
+		else:
+			transition_to_state(State.ATTACKING)
+			start_attack()
+
+func update_attacking(delta: float) -> void:
+	if anim.animation == "attack" and anim.frame >= shoot_frame and not has_shot:
+		has_shot = true
+		fireball_burst()
+
+func update_teleporting(delta: float) -> void:
+	pass
+
+func transition_to_state(new_state: State) -> void:
+	if current_state == new_state:
+		return
+
+	match current_state:
+		State.IDLE:
+			exit_idle()
+		State.ATTACKING:
+			exit_attacking()
+		State.TELEPORTING:
+			exit_teleporting()
+		State.DEAD:
+			exit_dead()
+
+	current_state = new_state
+
+	match current_state:
+		State.IDLE:
+			enter_idle()
+		State.ATTACKING:
+			enter_attacking()
+		State.TELEPORTING:
+			enter_teleporting()
+		State.DEAD:
+			enter_dead()
+
+func enter_idle() -> void:
+	anim.play("idle")
+
+func exit_idle() -> void:
+	pass
+
+func enter_attacking() -> void:
+	has_shot = false
+
+func exit_attacking() -> void:
+	has_shot = false
+
+func enter_teleporting() -> void:
+	has_shot = false
+	velocity = Vector2.ZERO
+	pending_teleport_position = get_teleport_position()
+	teleport_hit_targets.clear()
+	teleport_out_effect.visible = true
+	teleport_out_damage_shape.disabled = false
+	teleport_out_effect.play("teleport_out")
+	anim.visible = false
+	teleport_sound.play(5)
+
+func exit_teleporting() -> void:
+	teleport_sound.stop()
+
+func enter_dead() -> void:
+	has_shot = false
+	velocity = Vector2.ZERO
+	hurtbox.monitoring = false
+	hurtbox.monitorable = false
+	teleport_signal.visible = false
+	teleport_out_effect.visible = false
+	teleport_in_effect.visible = false
+	teleport_out_damage_shape.disabled = true
+	teleport_in_damage_shape.disabled = true
+	anim.visible = false
+	death_animation.visible = true
+	death_sound.play()
+	death_animation.play("dead")
+	health_warning_label.visible = false
+
+func exit_dead() -> void:
+	pass
 
 func face_target() -> void:
 	if target == null:
@@ -106,25 +236,38 @@ func update_facing_visuals() -> void:
 	projectile_spawn.position.x = projectile_spawn_distance * facing
 
 func start_attack() -> void:
-	is_attacking = true
-	has_shot = false
+	if current_state == State.DEAD:
+		return
+
 	anim.play("attack")
 
 func start_teleport_attack() -> void:
-	if is_teleporting:
-		return
+	pass
 
-	is_teleporting = true
-	has_shot = false
-	velocity = Vector2.ZERO
+func get_teleport_position() -> Vector2:
+	if target != null and randf() < teleport_to_player_chance:
+		return get_nearest_teleport_position_to_target()
 
-	pending_teleport_position = get_random_teleport_position()
+	return get_random_teleport_position()
 
-	teleport_hit_targets.clear()
-	teleport_out_effect.visible = true
-	teleport_out_damage_shape.disabled = false
-	teleport_out_effect.play("teleport_out")
-	anim.visible = false
+func get_nearest_teleport_position_to_target() -> Vector2:
+	if target == null:
+		return get_random_teleport_position()
+
+	if teleport_points.is_empty():
+		return get_random_teleport_position()
+
+	var nearest_position: Vector2 = teleport_points[0].global_position
+	var nearest_distance_sq: float = target.global_position.distance_squared_to(nearest_position)
+
+	for point in teleport_points:
+		var candidate_position: Vector2 = point.global_position
+		var candidate_distance_sq: float = target.global_position.distance_squared_to(candidate_position)
+		if candidate_distance_sq < nearest_distance_sq:
+			nearest_distance_sq = candidate_distance_sq
+			nearest_position = candidate_position
+
+	return nearest_position
 
 func get_random_teleport_position() -> Vector2:
 	if teleport_points.is_empty():
@@ -141,8 +284,22 @@ func get_random_teleport_position() -> Vector2:
 	return teleport_points[index].global_position
 
 func _on_teleport_out_finished() -> void:
+	if current_state == State.DEAD:
+		return
+
 	teleport_out_effect.visible = false
 	teleport_out_damage_shape.disabled = true
+
+	teleport_signal.global_position = pending_teleport_position + Vector2(0, -50)
+	teleport_signal.visible = true
+	teleport_signal.play("signal")
+
+	await get_tree().create_timer(teleport_in_signal_time).timeout
+
+	if current_state == State.DEAD:
+		return
+
+	teleport_signal.visible = false
 
 	global_position = pending_teleport_position
 
@@ -159,11 +316,29 @@ func _on_teleport_out_finished() -> void:
 	teleport_in_effect.play("teleport_in")
 
 func _on_teleport_in_finished() -> void:
+	if current_state == State.DEAD:
+		return
+
 	teleport_in_effect.visible = false
 	teleport_in_damage_shape.disabled = true
 	anim.visible = true
-	is_teleporting = false
+	transition_to_state(State.ATTACKING)
 	start_attack()
+
+func fireball_burst() -> void:
+	_fireball_burst_async()
+
+func _fireball_burst_async() -> void:
+	var shot_count: int = max(1, fireballs_per_attack)
+
+	for i in range(shot_count):
+		if current_state == State.DEAD:
+			return
+
+		spawn_fireball()
+
+		if i < shot_count - 1:
+			await get_tree().create_timer(time_between_fireballs).timeout
 
 func spawn_fireball() -> void:
 	if projectile_scene == null:
@@ -201,9 +376,111 @@ func _on_teleport_damage_area_entered(area: Area2D) -> void:
 	if area.is_in_group("player_hurtbox"):
 		damage_target(area)
 
+func _get_player_attack_damage(area: Area2D) -> int:
+	if area == null:
+		return 1
+
+	var owner_node := area.owner
+	if owner_node != null and owner_node.has_method("get_attack_damage"):
+		return owner_node.get_attack_damage()
+
+	var parent_node := area.get_parent()
+	if parent_node != null and parent_node.has_method("get_attack_damage"):
+		return parent_node.get_attack_damage()
+
+	return 1
+
+func _on_hurtbox_area_entered(area: Area2D) -> void:
+	if current_state == State.DEAD:
+		return
+
+	if area.is_in_group("player_attack"):
+		take_damage(_get_player_attack_damage(area))
+
+func take_damage(amount: int) -> void:
+	if current_state == State.DEAD:
+		return
+
+	current_health -= amount
+
+	var health_percent: float = float(current_health) / float(max_health)
+
+	if health_percent <= 0.5 and not shown_50_percent:
+		shown_50_percent = true
+		_show_health_warning("50% HEALTH")
+
+	if health_percent <= 0.25 and not shown_25_percent:
+		shown_25_percent = true
+		_show_health_warning("25% HEALTH")
+
+	if health_percent <= 0.10 and not shown_10_percent:
+		shown_10_percent = true
+		_show_health_warning("10% HEALTH")
+
+	print("Beast health: ", current_health)
+
+	anim.modulate = Color(2, 2, 2)
+	await get_tree().create_timer(0.1).timeout
+
+	if current_state != State.DEAD:
+		anim.modulate = Color(1, 1, 1)
+
+	if current_health <= 0:
+		die()
+
+func _show_health_warning(text_to_show: String) -> void:
+	health_warning_label.text = text_to_show
+	health_warning_label.visible = true
+	health_warning_label.modulate = Color(1, 1, 1, 1)
+	health_warning_label.scale = Vector2(1.5, 1.5)
+	health_warning_label.position = health_warning_start_pos
+
+	if warning_tween != null:
+		warning_tween.kill()
+
+	warning_tween = create_tween()
+	warning_tween.tween_property(
+		health_warning_label,
+		"position",
+		health_warning_start_pos + Vector2(0, -20),
+		1.5
+	)
+	warning_tween.parallel().tween_property(
+		health_warning_label,
+		"modulate:a",
+		0.0,
+		1.5
+	)
+
+	await warning_tween.finished
+
+	if current_state != State.DEAD:
+		health_warning_label.visible = false
+		health_warning_label.modulate = Color(1, 1, 1, 1)
+		health_warning_label.position = health_warning_start_pos
+		health_warning_label.scale = Vector2(1, 1)
+
+func _stop_player_movement() -> void:
+	var player = get_tree().get_first_node_in_group("player")
+	if player == null:
+		return
+
+	if player.has_method("set_movement_locked"):
+		player.set_movement_locked(true)
+
+func die() -> void:
+	_stop_player_movement()
+	transition_to_state(State.DEAD)
+
+
 func _on_animation_finished() -> void:
-	if anim.animation == "attack":
-		is_attacking = false
-		has_shot = false
+	if anim.animation == "attack" and current_state == State.ATTACKING:
 		attack_timer = attack_cooldown
-		anim.play("idle")
+		transition_to_state(State.IDLE)
+
+func _on_death_animation_finished() -> void:
+	if current_state != State.DEAD:
+		return
+
+	level_state.change_state(level_state.LevelStateEnum.VICTORY_SCREEN)
+	queue_free()

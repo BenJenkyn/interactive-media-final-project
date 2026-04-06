@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://bnp5hdl017exq"]
+[gd_scene load_steps=13 format=4 uid="uid://bnp5hdl017exq"]
 
 [ext_resource type="Texture2D" uid="uid://c1vatbrikw0fs" path="res://assets/background/1 lava-background/PNG/lava-background-preview.png" id="1_s1j21"]
 [ext_resource type="PackedScene" uid="uid://blyuyu0w5k02s" path="res://scenes/UI/hud.tscn" id="1_sru4k"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://bua4m2f24p1p7" path="res://scenes/player/spawn_effect.tscn" id="2_f7rt6"]
 [ext_resource type="Texture2D" uid="uid://chsxmc4t0va46" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/environment/layers/tileset.png" id="3_f5jb5"]
 [ext_resource type="PackedScene" uid="uid://i8ted54dl21m" path="res://scenes/player/beast.tscn" id="6_frjko"]
+[ext_resource type="Texture2D" uid="uid://bvsqrl176636w" path="res://assets/background/1 lava-background/PNG/lava-tile.png" id="8_8w0pe"]
+[ext_resource type="AudioStream" uid="uid://4pve6dsg0crc" path="res://assets/music/Intense Battle Theme.wav" id="9_7eb4w"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sru4k"]
 texture = ExtResource("3_f5jb5")
@@ -53,6 +55,9 @@ texture = ExtResource("3_f5jb5")
 physics_layer_0/collision_layer = 255
 sources/0 = SubResource("TileSetAtlasSource_sru4k")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8w0pe"]
+size = Vector2(1383, 75)
+
 [node name="Level3" type="Node2D"]
 script = ExtResource("1_t275y")
 spawn_effect_scene = ExtResource("2_f7rt6")
@@ -60,9 +65,10 @@ spawn_effect_scene = ExtResource("2_f7rt6")
 [node name="Player" parent="." instance=ExtResource("2_f5jb5")]
 position = Vector2(578, 356.00003)
 scale = Vector2(2.5, 2.5)
+collision_mask = 18
 
-[node name="Beast" parent="." groups=["enemy"] instance=ExtResource("6_frjko")]
-position = Vector2(836, 320)
+[node name="Beast" parent="." instance=ExtResource("6_frjko")]
+position = Vector2(1065, 332.00003)
 teleport_points_path = NodePath("../TeleportPoints")
 
 [node name="Hud" parent="." instance=ExtResource("1_sru4k")]
@@ -88,7 +94,7 @@ tile_set = SubResource("TileSet_t275y")
 position = Vector2(86, 397)
 
 [node name="Point2" type="Marker2D" parent="TeleportPoints"]
-position = Vector2(311, 398)
+position = Vector2(317, 396)
 
 [node name="Point3" type="Marker2D" parent="TeleportPoints"]
 position = Vector2(577, 398)
@@ -98,3 +104,67 @@ position = Vector2(826, 395)
 
 [node name="Point5" type="Marker2D" parent="TeleportPoints"]
 position = Vector2(1064, 397)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="LavaFlowImage3" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -11.0
+offset_top = -140.0
+offset_right = -11.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(1.2, 1.2)
+pivot_offset = Vector2(330, 40.833313)
+texture = ExtResource("8_8w0pe")
+stretch_mode = 1
+
+[node name="LavaFlowImage2" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -72.0
+offset_top = -109.0
+offset_right = -72.0
+offset_bottom = -49.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("8_8w0pe")
+stretch_mode = 1
+
+[node name="LavaFlowImage" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_top = -57.0
+offset_right = -2.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(1.2, 1.2)
+pivot_offset = Vector2(330, 40.833313)
+texture = ExtResource("8_8w0pe")
+stretch_mode = 1
+
+[node name="LavaArea2d" type="Area2D" parent="CanvasLayer"]
+position = Vector2(35, -120)
+collision_mask = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CanvasLayer/LavaArea2d"]
+position = Vector2(588, 690)
+shape = SubResource("RectangleShape2D_8w0pe")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_7eb4w")
+autoplay = true
+
+[connection signal="area_exited" from="CanvasLayer/LavaArea2d" to="Player" method="_on_lava_area_2d_area_exited"]

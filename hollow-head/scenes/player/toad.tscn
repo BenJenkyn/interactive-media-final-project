@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dgtrng7x87fd3"]
+[gd_scene load_steps=29 format=3 uid="uid://dgtrng7x87fd3"]
 
 [ext_resource type="Texture2D" uid="uid://r1gi3i706yv5" path="res://assets/enemies/1 mutant-toad/Sprites/attack/mutant-toad-attack1.png" id="1_eqe02"]
 [ext_resource type="Script" uid="uid://dlyuf8wd3olwr" path="res://scripts/toad.gd" id="1_ke71q"]
@@ -6,12 +6,42 @@
 [ext_resource type="Texture2D" uid="uid://cg5qvpuqfdmm4" path="res://assets/enemies/1 mutant-toad/Sprites/attack/mutant-toad-attack3.png" id="3_msvjk"]
 [ext_resource type="Texture2D" uid="uid://ctf1i2ndieipg" path="res://assets/enemies/1 mutant-toad/Sprites/idle/mutant-toad-idle1.png" id="4_47qhd"]
 [ext_resource type="Texture2D" uid="uid://b25vjab0jlk4" path="res://assets/enemies/1 mutant-toad/Sprites/idle/mutant-toad-idle2.png" id="5_70kv8"]
+[ext_resource type="Texture2D" uid="uid://mvimc1opibkl" path="res://assets/background/1 Gothicvania Swamp files/Sprites/Enemy-Death/spritesheet.png" id="5_rqtxo"]
 [ext_resource type="Texture2D" uid="uid://c2oiqobabe0ve" path="res://assets/enemies/1 mutant-toad/Sprites/idle/mutant-toad-idle3.png" id="6_knkjw"]
 [ext_resource type="Texture2D" uid="uid://cyw883e3jrf83" path="res://assets/enemies/1 mutant-toad/Sprites/idle/mutant-toad-idle4.png" id="7_w5ag0"]
 [ext_resource type="Texture2D" uid="uid://dwoktydlmfes7" path="res://assets/enemies/1 mutant-toad/Sprites/jump/mutant-toad-jump1.png" id="8_4dudq"]
 [ext_resource type="Texture2D" uid="uid://xjn3e4xba7om" path="res://assets/enemies/1 mutant-toad/Sprites/jump/mutant-toad-jump2.png" id="9_4jkyk"]
 [ext_resource type="Texture2D" uid="uid://dvbigi0rcmdji" path="res://assets/enemies/1 mutant-toad/Sprites/jump/mutant-toad-jump3.png" id="10_t5r6t"]
 [ext_resource type="Texture2D" uid="uid://qgwnd1supsqv" path="res://assets/enemies/1 mutant-toad/Sprites/jump/mutant-toad-jump4.png" id="11_akb4s"]
+[ext_resource type="AudioStream" uid="uid://bmfsirvfj11a6" path="res://assets/sound_effects/stomp.wav" id="14_cicnq"]
+[ext_resource type="AudioStream" uid="uid://cbiuft21jgwxk" path="res://assets/sound_effects/pick.wav" id="15_hojxr"]
+[ext_resource type="AudioStream" uid="uid://cdkol76m3srqa" path="res://assets/sound_effects/jump.wav" id="16_n6m22"]
+[ext_resource type="AudioStream" uid="uid://ce6xctqxmb5si" path="res://assets/sound_effects/hurt.wav" id="17_q1h80"]
+[ext_resource type="PackedScene" uid="uid://b1h6kleyhrkvn" path="res://scenes/sfx/death_sound.tscn" id="18_xnikt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cicnq"]
+atlas = ExtResource("5_rqtxo")
+region = Rect2(0, 0, 39, 49)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hojxr"]
+atlas = ExtResource("5_rqtxo")
+region = Rect2(39, 0, 39, 49)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n6m22"]
+atlas = ExtResource("5_rqtxo")
+region = Rect2(78, 0, 39, 49)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q1h80"]
+atlas = ExtResource("5_rqtxo")
+region = Rect2(117, 0, 39, 49)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xnikt"]
+atlas = ExtResource("5_rqtxo")
+region = Rect2(156, 0, 39, 49)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eunjw"]
+atlas = ExtResource("5_rqtxo")
+region = Rect2(195, 0, 39, 49)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_cp3xb"]
 animations = [{
@@ -19,8 +49,14 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("1_eqe02")
 }, {
-"duration": 1.0,
+"duration": 5.0,
 "texture": ExtResource("2_ke71q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_msvjk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_msvjk")
 }, {
 "duration": 1.0,
 "texture": ExtResource("3_msvjk")
@@ -28,6 +64,29 @@ animations = [{
 "loop": false,
 "name": &"attack",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cicnq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hojxr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n6m22")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q1h80")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xnikt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eunjw")
+}],
+"loop": false,
+"name": &"death",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -92,11 +151,20 @@ height = 36.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ke71q"]
 size = Vector2(39.5, 3)
 
-[node name="Enemy" type="CharacterBody2D" groups=["enemy"]]
+[node name="Toad" type="CharacterBody2D" groups=["enemy"]]
 scale = Vector2(2, 2)
-collision_layer = 2
-collision_mask = 29
+collision_layer = 512
+collision_mask = 16
 script = ExtResource("1_ke71q")
+
+[node name="HealthWarningLabel" type="Label" parent="."]
+offset_left = -39.5
+offset_top = -50.0
+offset_right = -38.5
+offset_bottom = -22.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -15)
@@ -108,13 +176,34 @@ position = Vector2(0, -1)
 shape = SubResource("CapsuleShape2D_xxevj")
 
 [node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 128
+collision_mask = 64
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 shape = SubResource("CapsuleShape2D_u6yk0")
 
-[node name="AttackArea" type="Area2D" parent="."]
+[node name="AttackArea" type="Area2D" parent="." groups=["enemy_attack"]]
 position = Vector2(27.5, -4)
+collision_layer = 256
+collision_mask = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
 position = Vector2(7.25, -0.5)
 shape = SubResource("RectangleShape2D_ke71q")
+
+[node name="SoundEffects" type="Node" parent="."]
+
+[node name="StompSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
+scale = Vector2(2, 2)
+stream = ExtResource("14_cicnq")
+
+[node name="JumpSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("15_hojxr")
+
+[node name="BigJumpSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("16_n6m22")
+
+[node name="TongueSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("17_q1h80")
+
+[node name="DeathSound" parent="SoundEffects" instance=ExtResource("18_xnikt")]
