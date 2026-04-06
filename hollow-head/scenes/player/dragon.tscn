@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=3 uid="uid://bl4wv2qpthcg1"]
+[gd_scene load_steps=60 format=3 uid="uid://bl4wv2qpthcg1"]
 
 [ext_resource type="Script" uid="uid://b5eaed0u3i30w" path="res://scripts/dragon.gd" id="1_n5a5n"]
 [ext_resource type="Texture2D" uid="uid://buvrj6ok5ex0p" path="res://assets/enemies/1 demon-Files/Sprites/Idle/idle1.png" id="2_4qq75"]
@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://b1h6kleyhrkvn" path="res://scenes/sfx/death_sound.tscn" id="29_44nqu"]
 [ext_resource type="Texture2D" uid="uid://62jlnhx33qwy" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame4.png" id="29_surjs"]
 [ext_resource type="Texture2D" uid="uid://d00hab81ufaxy" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame5.png" id="30_d8uvq"]
+[ext_resource type="AudioStream" uid="uid://cq0yxm2ct883c" path="res://assets/sound_effects/fire.mp3" id="30_polqc"]
 [ext_resource type="Texture2D" uid="uid://c76nmw3n4d14y" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame6.png" id="31_cawtp"]
 [ext_resource type="Texture2D" uid="uid://sxc0pqxu0e0u" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame7.png" id="32_285w4"]
 [ext_resource type="Texture2D" uid="uid://bdrfu34eq6dr5" path="res://assets/enemies/1 demon-Files/Sprites/DemonAttack/frame8.png" id="33_7xd1k"]
@@ -385,5 +386,10 @@ shape = SubResource("CapsuleShape2D_8fn3l")
 [node name="SoundEffects" type="Node2D" parent="."]
 
 [node name="DeathSound" parent="SoundEffects" instance=ExtResource("29_44nqu")]
+
+[node name="FireBreathSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("30_polqc")
+
+[node name="RedFireBreathSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
 
 [connection signal="animation_finished" from="BigAttack" to="." method="_on_big_attack_animation_finished"]
