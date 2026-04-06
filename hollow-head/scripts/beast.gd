@@ -21,7 +21,7 @@ enum State {
 @export var fireballs_per_attack: int = 3
 @export var time_between_fireballs: float = 0.25
 
-@export var max_health: int = 10
+@export var max_health: int = 30
 
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var projectile_spawn: Marker2D = $ProjectileSpawn
