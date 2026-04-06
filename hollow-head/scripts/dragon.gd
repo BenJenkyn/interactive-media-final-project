@@ -13,6 +13,9 @@ enum State {
 @export var attack_time_min: float = 2.0
 @export var attack_time_max: float = 4.0
 @export var top_limit_y: float = 80.0
+@export var left_limit_x: float = -INF
+@export var right_limit_x: float = INF
+@export var bottom_limit_y: float = INF
 @export var start_facing_left: bool = true
 
 @export var max_health: int = 10
@@ -331,10 +334,37 @@ func _update_attack_boxes_and_flame() -> void:
 				orange_flame_sprite.stop()
 
 func _enforce_bounds() -> void:
+	if not is_inf(left_limit_x) and global_position.x < left_limit_x:
+		global_position.x = left_limit_x
+		if move_direction.x < 0.0:
+			move_direction.x = abs(move_direction.x)
+			move_direction = move_direction.normalized()
+
+		if state == State.IDLE:
+			reset_direction_timer()
+
+	if not is_inf(right_limit_x) and global_position.x > right_limit_x:
+		global_position.x = right_limit_x
+		if move_direction.x > 0.0:
+			move_direction.x = -abs(move_direction.x)
+			move_direction = move_direction.normalized()
+
+		if state == State.IDLE:
+			reset_direction_timer()
+
 	if global_position.y < top_limit_y:
 		global_position.y = top_limit_y
 		if move_direction.y < 0.0:
 			move_direction.y = abs(move_direction.y)
+			move_direction = move_direction.normalized()
+
+		if state == State.IDLE:
+			reset_direction_timer()
+
+	if not is_inf(bottom_limit_y) and global_position.y > bottom_limit_y:
+		global_position.y = bottom_limit_y
+		if move_direction.y > 0.0:
+			move_direction.y = -abs(move_direction.y)
 			move_direction = move_direction.normalized()
 
 		if state == State.IDLE:
