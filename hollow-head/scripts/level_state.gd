@@ -31,6 +31,8 @@ func change_state(new_state: LevelStateEnum) -> void:
 			_load_level3()
 		LevelStateEnum.VICTORY_SCREEN:
 			_load_victory_screen()
+	
+	player_state.reset_health()
 
 func restart_current_level() -> void:
 	_clear_pause_state()
