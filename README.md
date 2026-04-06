@@ -4,10 +4,6 @@
 
 ### Asset Packs
 
-https://maaot.itch.io/mossy-cavern
-
-https://anokolisa.itch.io/sidescroller-pixelart-sprites-asset-pack-forest-16x16
-
 https://ansimuz.itch.io/gothicvania-patreon-collection
 
 Player -> Layer 1 / Mask 2,5
