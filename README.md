@@ -1,8 +1,33 @@
 # Interactive Media Final Project
 
-## Sources
+## How to play
 
-### Asset Packs
+Start from the main menu and fight through 3 levels.
+
+Your goal is to defeat each level's boss:
+- Level 1 boss clears to an upgrade screen.
+- Level 2 boss clears to another upgrade screen.
+- Level 3 boss clears to the victory screen.
+
+Between levels, choose 1 upgrade before continuing. Upgrades can unlock new abilities:
+- Dodge (after Level 1 upgrade choices)
+- Throw projectile (after Level 2 upgrade choices)
+
+Tips:
+- Dodging gives you a quick burst of movement and temporary safety.
+- Projectile throw has a cooldown, so time it carefully.
+- You can pause at any time to open the pause menu.
+
+## Controls
+
+- Move: A / D or Left / Right Arrow Keys
+- Jump: W or Up Arrow
+- Melee Attack: Space
+- Throw Projectile (when unlocked): Q
+- Dodge (when unlocked): Shift
+- Pause: P or Esc
+
+## Asset Credits
 
 https://ansimuz.itch.io/gothicvania-patreon-collection
 
@@ -24,8 +49,3 @@ https://pixabay.com/sound-effects/film-special-effects-burn-408439/
 
 https://megumi-ryu.itch.io/mp3onevictory-fanfare-16bit
 
-Player -> Layer 1 / Mask 2,5
-Enemy -> Layer 2 / Mask 1,3,4,5
-AttackArea -> Layer 3 / Mask 2
-Projectile -> Layer 4 / Mask 2,5
-Walls/Floor -> Layer 5 / Mask 1,2,4
