@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b2xhq6lwr66ho"
+path="res://.godot/imported/attack.ogg-8aa99cf1ac56afc1232d390ab590c038.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/sfx/Gothicvania Cemetery/attack.ogg"
+dest_files=["res://.godot/imported/attack.ogg-8aa99cf1ac56afc1232d390ab590c038.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

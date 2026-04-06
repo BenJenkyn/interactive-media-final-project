@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cor04f3xcla8"
+path="res://.godot/imported/break.wav-833ee0a03176eee5b07d6510538cf84b.sample"
+
+[deps]
+
+source_file="res://assets/sfx/Meta data assets files/break.wav"
+dest_files=["res://.godot/imported/break.wav-833ee0a03176eee5b07d6510538cf84b.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bds8d2wahvr6q"
+path="res://.godot/imported/door.wav-333a149cb8f0ae71a94cce33417afcb9.sample"
+
+[deps]
+
+source_file="res://assets/sfx/Gothicvania Church/door.wav"
+dest_files=["res://.godot/imported/door.wav-333a149cb8f0ae71a94cce33417afcb9.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
