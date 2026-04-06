@@ -214,9 +214,11 @@ func _change_state(new_state: State) -> void:
 			close_attack_returning = false
 
 		State.DEAD:
+			_stop_player_movement()
 			_set_hitbox(hurtbox, hurtbox_shape, false)
 			_set_hitbox(big_hitbox, big_hitbox_shape, false)
 			_set_hitbox(small_hitbox, small_hitbox_shape, false)
+			velocity = Vector2.ZERO
 			idle_sprite.visible = true
 			death_sound.play()
 			idle_sprite.play("dead")
@@ -358,6 +360,14 @@ func reset_attack_timer() -> void:
 
 func update_facing() -> void:
 	scale.x = -scale.x
+
+func _stop_player_movement() -> void:
+	var player = get_tree().get_first_node_in_group("player")
+	if player == null:
+		return
+
+	if player.has_method("set_movement_locked"):
+		player.set_movement_locked(true)
 
 func take_damage(amount: int) -> void:
 	if is_dead:

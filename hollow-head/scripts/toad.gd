@@ -536,7 +536,16 @@ func die() -> void:
 	hurtbox.monitoring = false
 	hurtbox.monitorable = false
 	death_sound.play()
+	attack_shape.disabled = true
+	velocity = Vector2.ZERO
+
+	var player_node = get_tree().get_first_node_in_group("player")
+	if player_node and player_node.has_method("set_movement_locked"):
+		player_node.set_movement_locked(true)
+
+
 	anim.play("death")
 	await anim.animation_finished
-	queue_free()
+
 	level_state.change_state(level_state.LevelStateEnum.UPGRADE_BETWEEN_1_2)
+	queue_free()

@@ -432,8 +432,18 @@ func _show_health_warning(text_to_show: String) -> void:
 		health_warning_label.position = health_warning_start_pos
 		health_warning_label.scale = Vector2(1, 1)
 
+func _stop_player_movement() -> void:
+	var player = get_tree().get_first_node_in_group("player")
+	if player == null:
+		return
+
+	if player.has_method("set_movement_locked"):
+		player.set_movement_locked(true)
+
 func die() -> void:
+	_stop_player_movement()
 	transition_to_state(State.DEAD)
+
 
 func _on_animation_finished() -> void:
 	if anim.animation == "attack" and current_state == State.ATTACKING:

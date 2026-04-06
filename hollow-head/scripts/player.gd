@@ -63,6 +63,8 @@ var hurt_source_x: float = 0.0
 var respawn_point: Node2D = null
 var attack_damage: int = 1
 
+var movement_locked: bool = false
+
 func _ready() -> void:
 	max_health = player_state.max_health
 	current_health = player_state.current_health
@@ -103,6 +105,16 @@ func _physics_process(delta: float) -> void:
 
 	if is_dead:
 		velocity = Vector2.ZERO
+		move_and_slide()
+		return
+
+	if movement_locked:
+		velocity = Vector2.ZERO
+		_update_facing_visuals()
+
+		if state != PlayerState.IDLE:
+			change_state(PlayerState.IDLE)
+
 		move_and_slide()
 		return
 
@@ -389,6 +401,23 @@ func spawn_projectile() -> void:
 func get_attack_damage() -> int:
 	return attack_damage
 
+func set_movement_locked(locked: bool) -> void:
+	movement_locked = locked
+	velocity = Vector2.ZERO
+
+	if locked:
+		attack_area.monitoring = false
+		attack_shape.disabled = true
+		has_spawned_projectile = false
+
+		if state == PlayerState.DODGE:
+			hurtbox.monitoring = true
+			hurtbox.monitorable = true
+			hurtbox_shape.disabled = false
+			anim.modulate.a = 1.0
+
+		change_state(PlayerState.IDLE)
+
 func _handle_pause_input() -> void:
 	if is_dead:
 		return
@@ -437,6 +466,9 @@ func take_damage_and_respawn(amount: int, respawn_target: Node2D) -> void:
 	if is_dead:
 		return
 
+	if movement_locked:
+		return
+
 	if state == PlayerState.DODGE:
 		return
 
@@ -476,7 +508,7 @@ func take_damage_and_respawn(amount: int, respawn_target: Node2D) -> void:
 
 	await get_tree().create_timer(hurt_time).timeout
 
-	if state != PlayerState.DEAD:
+	if state != PlayerState.DEAD and not movement_locked:
 		if respawn_target == null:
 			if not is_on_floor():
 				change_state(PlayerState.FALL)
@@ -485,7 +517,7 @@ func take_damage_and_respawn(amount: int, respawn_target: Node2D) -> void:
 
 	await get_tree().create_timer(invincibility_time).timeout
 
-	if state != PlayerState.DEAD:
+	if state != PlayerState.DEAD and not movement_locked:
 		can_take_damage = true
 
 func _handle_player_death() -> void:
@@ -545,7 +577,9 @@ func _on_animated_sprite_2d_animation_finished() -> void:
 
 		var input_x := Input.get_axis("move_left", "move_right")
 
-		if not is_on_floor():
+		if movement_locked:
+			change_state(PlayerState.IDLE)
+		elif not is_on_floor():
 			if velocity.y < 0:
 				change_state(PlayerState.JUMP)
 			else:
@@ -556,7 +590,9 @@ func _on_animated_sprite_2d_animation_finished() -> void:
 			change_state(PlayerState.IDLE)
 
 	elif anim.animation == "throw":
-		if not is_on_floor():
+		if movement_locked:
+			change_state(PlayerState.IDLE)
+		elif not is_on_floor():
 			change_state(PlayerState.FALL)
 		elif abs(Input.get_axis("move_left", "move_right")) > 0.1:
 			change_state(PlayerState.RUN)
@@ -569,13 +605,14 @@ func _on_dash_timer_timeout() -> void:
 	hurtbox_shape.disabled = false
 	anim.modulate.a = 1.0
 
-	if not is_on_floor():
+	if movement_locked:
+		change_state(PlayerState.IDLE)
+	elif not is_on_floor():
 		change_state(PlayerState.FALL)
 	elif abs(Input.get_axis("move_left", "move_right")) > 0.1:
 		change_state(PlayerState.RUN)
 	else:
 		change_state(PlayerState.IDLE)
-
 
 func _on_lava_area_2d_area_exited(area: Area2D) -> void:
 	if area != hurtbox:
