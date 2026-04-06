@@ -13,10 +13,10 @@
 [ext_resource type="Texture2D" uid="uid://xjn3e4xba7om" path="res://assets/enemies/1 mutant-toad/Sprites/jump/mutant-toad-jump2.png" id="9_4jkyk"]
 [ext_resource type="Texture2D" uid="uid://dvbigi0rcmdji" path="res://assets/enemies/1 mutant-toad/Sprites/jump/mutant-toad-jump3.png" id="10_t5r6t"]
 [ext_resource type="Texture2D" uid="uid://qgwnd1supsqv" path="res://assets/enemies/1 mutant-toad/Sprites/jump/mutant-toad-jump4.png" id="11_akb4s"]
-[ext_resource type="AudioStream" uid="uid://bmfsirvfj11a6" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/fx/stomp.wav" id="14_cicnq"]
-[ext_resource type="AudioStream" uid="uid://cbiuft21jgwxk" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/fx/pick.wav" id="15_hojxr"]
-[ext_resource type="AudioStream" uid="uid://cdkol76m3srqa" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/fx/jump.wav" id="16_n6m22"]
-[ext_resource type="AudioStream" uid="uid://ce6xctqxmb5si" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/fx/hurt.wav" id="17_q1h80"]
+[ext_resource type="AudioStream" uid="uid://bmfsirvfj11a6" path="res://assets/sound_effects/stomp.wav" id="14_cicnq"]
+[ext_resource type="AudioStream" uid="uid://cbiuft21jgwxk" path="res://assets/sound_effects/pick.wav" id="15_hojxr"]
+[ext_resource type="AudioStream" uid="uid://cdkol76m3srqa" path="res://assets/sound_effects/jump.wav" id="16_n6m22"]
+[ext_resource type="AudioStream" uid="uid://ce6xctqxmb5si" path="res://assets/sound_effects/hurt.wav" id="17_q1h80"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cicnq"]
 atlas = ExtResource("5_rqtxo")

@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://b4m4gq6wu3htk"
-path="res://.godot/imported/enemy_death.wav-5673be7074846ef6ead0eb58a5bd64a9.sample"
+path="res://.godot/imported/enemy_death.wav-9f8a12454fcdf86401c0c4aa844a787c.sample"
 
 [deps]
 
-source_file="res://assets/background/1 Gothicvania Church/Stomper Asset Files/fx/enemy_death.wav"
-dest_files=["res://.godot/imported/enemy_death.wav-5673be7074846ef6ead0eb58a5bd64a9.sample"]
+source_file="res://assets/sound_effects/enemy_death.wav"
+dest_files=["res://.godot/imported/enemy_death.wav-9f8a12454fcdf86401c0c4aa844a787c.sample"]
 
 [params]
 

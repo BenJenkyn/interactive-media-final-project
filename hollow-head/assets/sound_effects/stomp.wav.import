@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://bmfsirvfj11a6"
-path="res://.godot/imported/stomp.wav-cbb2ec7be9102821e5f5ed4b7bca3f55.sample"
+path="res://.godot/imported/stomp.wav-cc30674ff06d4a45986e3a4e88a7ebba.sample"
 
 [deps]
 
-source_file="res://assets/background/1 Gothicvania Church/Stomper Asset Files/fx/stomp.wav"
-dest_files=["res://.godot/imported/stomp.wav-cbb2ec7be9102821e5f5ed4b7bca3f55.sample"]
+source_file="res://assets/sound_effects/stomp.wav"
+dest_files=["res://.godot/imported/stomp.wav-cc30674ff06d4a45986e3a4e88a7ebba.sample"]
 
 [params]
 

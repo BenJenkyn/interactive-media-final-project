@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://c56x4etcesd0k"
-path="res://.godot/imported/attack.wav-731b9be1f9f5413d06b15d4e4577b94f.sample"
+path="res://.godot/imported/attack.wav-32867aa3ed4a12b42a9b201c793bfaef.sample"
 
 [deps]
 
-source_file="res://assets/background/1 Gothicvania Church/Stomper Asset Files/fx/attack.wav"
-dest_files=["res://.godot/imported/attack.wav-731b9be1f9f5413d06b15d4e4577b94f.sample"]
+source_file="res://assets/sound_effects/attack.wav"
+dest_files=["res://.godot/imported/attack.wav-32867aa3ed4a12b42a9b201c793bfaef.sample"]
 
 [params]
 
