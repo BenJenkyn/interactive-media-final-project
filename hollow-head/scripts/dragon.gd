@@ -218,7 +218,7 @@ func _change_state(new_state: State) -> void:
 			idle_sprite.play("dead")
 			health_warning_label.visible = false
 			await idle_sprite.animation_finished
-			level_state.change_state(level_state.LevelStateEnum.LEVEL3)
+			level_state.change_state(level_state.LevelStateEnum.UPGRADE_BETWEEN_2_3)
 			queue_free()
 
 func _process_idle(delta: float) -> void:
@@ -445,12 +445,26 @@ func _damage_node_once(target: Node, damage: int, hit_list: Array[Node]) -> void
 	elif target.get_parent() != null and target.get_parent().has_method("take_damage"):
 		target.get_parent().take_damage(damage)
 
+func _get_player_attack_damage(area: Area2D) -> int:
+	if area == null:
+		return 1
+
+	var owner_node := area.owner
+	if owner_node != null and owner_node.has_method("get_attack_damage"):
+		return owner_node.get_attack_damage()
+
+	var parent_node := area.get_parent()
+	if parent_node != null and parent_node.has_method("get_attack_damage"):
+		return parent_node.get_attack_damage()
+
+	return 1
+
 func _on_hurtbox_area_entered(area: Area2D) -> void:
 	if is_dead:
 		return
 
 	if area.is_in_group("player_attack"):
-		take_damage(1)
+		take_damage(_get_player_attack_damage(area))
 
 func _on_big_hitbox_body_entered(body: Node) -> void:
 	if is_dead:
