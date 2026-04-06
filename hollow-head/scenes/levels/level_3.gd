@@ -3,8 +3,11 @@ extends Node2D
 @export var spawn_effect_scene: PackedScene
 
 @onready var beast = $Beast
+@onready var player = $Player
+@onready var respawn_point = $TeleportPoints/Point3
 
 func _ready() -> void:
+	player.set_respawn_point(respawn_point)
 	beast.visible = false
 	spawn_beast_effect()
 

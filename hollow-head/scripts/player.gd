@@ -58,6 +58,7 @@ var dodge_flash_interval: float = 0.05
 var current_health: int
 var can_take_damage: bool = true
 var hurt_source_x: float = 0.0
+var respawn_point: Node2D = null
 
 func _ready() -> void:
 	current_health = max_health
@@ -406,6 +407,9 @@ func _on_overlay_tree_exited() -> void:
 	pause_toggle_lock_frames = 2
 
 func take_damage(amount: int) -> void:
+	take_damage_and_respawn(amount, null)
+
+func take_damage_and_respawn(amount: int, respawn_target: Node2D) -> void:
 	if amount <= 0:
 		return
 
@@ -435,23 +439,31 @@ func take_damage(amount: int) -> void:
 		_handle_player_death()
 		return
 
-	var knockback_dir: float = sign(global_position.x - hurt_source_x)
-	if knockback_dir == 0.0:
-		knockback_dir = -facing
+	if respawn_target != null:
+		velocity = Vector2.ZERO
+		global_position = respawn_target.global_position
+		facing = 1.0
+		_update_facing_visuals()
+		change_state(PlayerState.IDLE)
+	else:
+		var knockback_dir: float = sign(global_position.x - hurt_source_x)
+		if knockback_dir == 0.0:
+			knockback_dir = -facing
 
-	global_position.x += knockback_dir * knockback_separation_distance
-	velocity.x = contact_knockback_x * knockback_dir
-	velocity.y = contact_knockback_y
+		global_position.x += knockback_dir * knockback_separation_distance
+		velocity.x = contact_knockback_x * knockback_dir
+		velocity.y = contact_knockback_y
 
-	change_state(PlayerState.HURT)
+		change_state(PlayerState.HURT)
 
 	await get_tree().create_timer(hurt_time).timeout
 
 	if state != PlayerState.DEAD:
-		if not is_on_floor():
-			change_state(PlayerState.FALL)
-		else:
-			change_state(PlayerState.IDLE)
+		if respawn_target == null:
+			if not is_on_floor():
+				change_state(PlayerState.FALL)
+			else:
+				change_state(PlayerState.IDLE)
 
 	await get_tree().create_timer(invincibility_time).timeout
 
@@ -476,6 +488,9 @@ func heal(amount: int) -> void:
 	current_health = min(current_health, max_health)
 	player_state.current_health = current_health
 	player_state.health_changed.emit(player_state.current_health, player_state.max_health)
+
+func set_respawn_point(point: Node2D) -> void:
+	respawn_point = point
 
 func _on_hurtbox_area_entered(area: Area2D) -> void:
 	if not can_take_damage:
@@ -542,3 +557,10 @@ func _on_dash_timer_timeout() -> void:
 		change_state(PlayerState.RUN)
 	else:
 		change_state(PlayerState.IDLE)
+
+
+func _on_lava_area_2d_area_exited(area: Area2D) -> void:
+	if area != hurtbox:
+		return
+
+	take_damage_and_respawn(1, respawn_point)
