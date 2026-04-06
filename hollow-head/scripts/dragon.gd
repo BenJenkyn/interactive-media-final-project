@@ -222,7 +222,7 @@ func _change_state(new_state: State) -> void:
 			idle_sprite.play("dead")
 			health_warning_label.visible = false
 			await idle_sprite.animation_finished
-			level_state.change_state(level_state.LevelStateEnum.LEVEL3)
+			level_state.change_state(level_state.LevelStateEnum.UPGRADE_BETWEEN_2_3)
 			queue_free()
 
 func _process_idle(delta: float) -> void:

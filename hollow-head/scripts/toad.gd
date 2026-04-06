@@ -539,4 +539,4 @@ func die() -> void:
 	anim.play("death")
 	await anim.animation_finished
 	queue_free()
-	level_state.change_state(level_state.LevelStateEnum.LEVEL2)
+	level_state.change_state(level_state.LevelStateEnum.UPGRADE_BETWEEN_1_2)
