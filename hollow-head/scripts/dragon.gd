@@ -10,8 +10,8 @@ enum State {
 @export var move_speed: float = 60.0
 @export var direction_change_time_min: float = 1.0
 @export var direction_change_time_max: float = 2.5
-@export var attack_time_min: float = 4.0
-@export var attack_time_max: float = 8.0
+@export var attack_time_min: float = 2.0
+@export var attack_time_max: float = 4.0
 @export var top_limit_y: float = 80.0
 @export var start_facing_left: bool = true
 
