@@ -52,6 +52,8 @@ enum State {
 
 # Sound Effects
 @onready var death_sound := $SoundEffects/DeathSound
+@onready var fire_breath_sound := $SoundEffects/FireBreathSound
+@onready var red_fire_breath_sound := $SoundEffects/RedFireBreathSound
 
 var state: State = State.IDLE
 var move_direction: Vector2 = Vector2.RIGHT
@@ -160,6 +162,7 @@ func _change_state(new_state: State) -> void:
 			high_dash_attack_sprite.stop()
 			blue_flame_sprite.visible = false
 			blue_flame_sprite.stop()
+			fire_breath_sound.stop()
 			_assign_nearest_waypoint()
 			update_facing()
 
@@ -197,6 +200,7 @@ func _change_state(new_state: State) -> void:
 			high_dash_attack_sprite.visible = true
 			high_dash_attack_sprite.play("attack")
 			high_dash_attack_sprite.frame = 0
+			fire_breath_sound.play(1.2)
 
 			var center := get_viewport_rect().size / 2.0
 			var to_center := (center - global_position).normalized()
