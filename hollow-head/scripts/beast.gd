@@ -246,9 +246,28 @@ func start_teleport_attack() -> void:
 
 func get_teleport_position() -> Vector2:
 	if target != null and randf() < teleport_to_player_chance:
-		return target.global_position
+		return get_nearest_teleport_position_to_target()
 
 	return get_random_teleport_position()
+
+func get_nearest_teleport_position_to_target() -> Vector2:
+	if target == null:
+		return get_random_teleport_position()
+
+	if teleport_points.is_empty():
+		return get_random_teleport_position()
+
+	var nearest_position: Vector2 = teleport_points[0].global_position
+	var nearest_distance_sq: float = target.global_position.distance_squared_to(nearest_position)
+
+	for point in teleport_points:
+		var candidate_position: Vector2 = point.global_position
+		var candidate_distance_sq: float = target.global_position.distance_squared_to(candidate_position)
+		if candidate_distance_sq < nearest_distance_sq:
+			nearest_distance_sq = candidate_distance_sq
+			nearest_position = candidate_position
+
+	return nearest_position
 
 func get_random_teleport_position() -> Vector2:
 	if teleport_points.is_empty():
