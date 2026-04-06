@@ -211,7 +211,8 @@ func _change_state(new_state: State) -> void:
 			var player = get_tree().get_first_node_in_group("player")
 			if player != null:
 				close_attack_target = player.global_position
-
+			
+			red_fire_breath_sound.play()
 			high_dash_attack_sprite.visible = true
 			high_dash_attack_sprite.play("attack")
 			high_dash_attack_sprite.frame = 0
