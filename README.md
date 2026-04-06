@@ -6,6 +6,8 @@
 
 https://ansimuz.itch.io/gothicvania-patreon-collection
 
+https://oliviacirilla.itch.io/retro-game-music-pack
+
 Player -> Layer 1 / Mask 2,5
 Enemy -> Layer 2 / Mask 1,3,4,5
 AttackArea -> Layer 3 / Mask 2
