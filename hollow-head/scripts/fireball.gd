@@ -6,6 +6,10 @@ extends Area2D
 
 @onready var fireball_animation = $AnimatedSprite2D
 
+# Sound effects
+@onready var fire_shot_sound := $SFX/FireShotSound
+@onready var fire_disapear_sound := $SFX/FireDisapearSound
+
 var direction: float = 1.0
 var has_hit: bool = false
 
@@ -13,6 +17,7 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
 	fireball_animation.play()
+	fire_shot_sound.play()
 
 func _physics_process(delta: float) -> void:
 	if has_hit:
@@ -52,4 +57,5 @@ func _on_area_entered(area: Area2D) -> void:
 		if p != null and p.has_method("take_damage"):
 			p.take_damage(damage)
 		has_hit = true
+		fire_disapear_sound.play()
 		queue_free()

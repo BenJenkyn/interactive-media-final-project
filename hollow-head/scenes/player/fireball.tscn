@@ -1,9 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://cv6es3hixawa3"]
+[gd_scene load_steps=9 format=3 uid="uid://cv6es3hixawa3"]
 
 [ext_resource type="Script" uid="uid://cev51x0jn4dqg" path="res://scripts/fireball.gd" id="1_wu6t6"]
 [ext_resource type="Texture2D" uid="uid://buecd8l5gsl2l" path="res://assets/enemies/1 Hell-Beast-Files/Fireball/Sprites/framer1.png" id="2_wu6t6"]
 [ext_resource type="Texture2D" uid="uid://d6w0p4kfb2a1" path="res://assets/enemies/1 Hell-Beast-Files/Fireball/Sprites/framer2.png" id="3_q3k02"]
 [ext_resource type="Texture2D" uid="uid://0lissuo1olfu" path="res://assets/enemies/1 Hell-Beast-Files/Fireball/Sprites/framer3.png" id="4_fyjsl"]
+[ext_resource type="AudioStream" uid="uid://wr608snmdgtd" path="res://assets/sfx/SpaceShooter/explosion.wav" id="5_fyjsl"]
+[ext_resource type="AudioStream" uid="uid://b61kgqnvxbncx" path="res://assets/sfx/Sewers pack files/explosion.wav" id="6_plp8d"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_fyjsl"]
 animations = [{
@@ -42,3 +44,13 @@ position = Vector2(5, 0)
 rotation = 1.5707964
 scale = Vector2(3, 3)
 shape = SubResource("CapsuleShape2D_plp8d")
+
+[node name="SFX" type="Node2D" parent="."]
+
+[node name="FireShotSound" type="AudioStreamPlayer2D" parent="SFX"]
+stream = ExtResource("5_fyjsl")
+volume_db = 5.0
+
+[node name="FireDisapearSound" type="AudioStreamPlayer2D" parent="SFX"]
+stream = ExtResource("6_plp8d")
+volume_db = 5.0

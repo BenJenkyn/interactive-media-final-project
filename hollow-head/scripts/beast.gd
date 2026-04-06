@@ -32,6 +32,7 @@ enum State {
 
 # Sound Effects
 @onready var death_sound: AudioStreamPlayer2D = $SoundEffects/DeathSound
+@onready var teleport_sound: AudioStreamPlayer2D = $SoundEffects/TeleportSound
 
 @onready var teleport_out_damage: Area2D = $TeleportOutDamage
 @onready var teleport_out_damage_shape: CollisionShape2D = $TeleportOutDamage/CollisionShape2D
@@ -194,9 +195,10 @@ func enter_teleporting() -> void:
 	teleport_out_damage_shape.disabled = false
 	teleport_out_effect.play("teleport_out")
 	anim.visible = false
+	teleport_sound.play(5)
 
 func exit_teleporting() -> void:
-	pass
+	teleport_sound.stop()
 
 func enter_dead() -> void:
 	has_shot = false
