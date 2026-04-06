@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bcqytyvkkid66"]
+[gd_scene load_steps=12 format=3 uid="uid://bcqytyvkkid66"]
 
 [ext_resource type="Script" uid="uid://8f4sc1oii7yo" path="res://scenes/levels/victory_screen.gd" id="1_51t1i"]
 [ext_resource type="Texture2D" uid="uid://bi1nkvscwhyit" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/environment/zaphire/sprites/zaphire1.png" id="1_fmqis"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://b48qts0me5odh" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/enemies/walker/sprites/walk2.png" id="5_s3c7b"]
 [ext_resource type="Texture2D" uid="uid://diw1jm1qrlmt4" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/enemies/walker/sprites/walk3.png" id="6_vb2hr"]
 [ext_resource type="Texture2D" uid="uid://b8ibl7fk1b5gr" path="res://assets/background/1 Gothicvania Church/ENVIRONMENT/column.png" id="7_gk7s6"]
+[ext_resource type="AudioStream" uid="uid://cs1ufcxcu1yul" path="res://assets/music/victory fanfare 16bit2.mp3" id="9_qldvl"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_vpn25"]
 animations = [{
@@ -122,3 +123,7 @@ grow_horizontal = 0
 grow_vertical = 2
 texture = ExtResource("7_gk7s6")
 flip_h = true
+
+[node name="VictoryMusic" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_qldvl")
+autoplay = true
