@@ -36,7 +36,7 @@ func hit() -> void:
 		return
 
 	has_hit = true
-	collision_shape.disabled = true
+	collision_shape.set_deferred("disabled", true)
 	anim.play("hit")
 
 func _on_body_entered(body: Node) -> void:
