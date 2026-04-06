@@ -18,7 +18,7 @@ enum State {
 @export var bottom_limit_y: float = INF
 @export var start_facing_left: bool = true
 
-@export var max_health: int = 10
+@export var max_health: int = 15
 @export var big_attack_damage: int = 1
 @export var small_attack_damage: int = 1
 
@@ -270,12 +270,14 @@ func _process_idle(delta: float) -> void:
 func _process_close_attack(delta: float) -> void:
 	if not close_attack_returning:
 		var to_target := close_attack_target - global_position
-		if to_target.length() > 20.0:
+		var should_pause_for_fire: bool = high_dash_attack_sprite.frame >= close_attack_flame_start_frame - 1
+
+		if to_target.length() > 20.0 and not should_pause_for_fire:
 			velocity = to_target.normalized() * close_attack_speed
 			move_direction = to_target.normalized()
 		else:
 			velocity = Vector2.ZERO
-			if high_dash_attack_sprite.frame >= close_attack_flame_start_frame:
+			if high_dash_attack_sprite.frame >= close_attack_flame_end_frame:
 				close_attack_returning = true
 	else:
 		if assigned_waypoint != null:
