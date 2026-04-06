@@ -65,6 +65,8 @@ var attack_damage: int = 1
 
 var movement_locked: bool = false
 
+var damage_popup_layer: CanvasLayer = null
+
 func _ready() -> void:
 	max_health = player_state.max_health
 	current_health = player_state.current_health
@@ -80,6 +82,8 @@ func _ready() -> void:
 	player_state.health_changed.emit(current_health, max_health)
 
 	_ensure_pause_action_binding()
+	_ensure_damage_popup_layer()
+
 	attack_area.monitoring = false
 	attack_shape.disabled = true
 	dash_timer.one_shot = true
@@ -96,6 +100,40 @@ func _ensure_pause_action_binding() -> void:
 		var pause_event := InputEventKey.new()
 		pause_event.physical_keycode = KEY_ESCAPE
 		InputMap.action_add_event("pause", pause_event)
+
+func _ensure_damage_popup_layer() -> void:
+	if damage_popup_layer != null:
+		return
+
+	damage_popup_layer = CanvasLayer.new()
+	damage_popup_layer.layer = 100
+	add_child(damage_popup_layer)
+
+func _show_damage_popup(amount: int) -> void:
+	if damage_popup_layer == null:
+		return
+
+	var label := Label.new()
+	label.text = "-" + str(amount)
+	label.z_index = 100
+	label.position = Vector2(40, 40)
+	label.modulate = Color(1, 0.2, 0.2, 1)
+
+	label.add_theme_font_size_override("font_size", 28)
+	label.add_theme_color_override("font_color", Color(1, 0.2, 0.2, 1))
+	label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
+	label.add_theme_constant_override("outline_size", 4)
+
+	damage_popup_layer.add_child(label)
+
+	var tween := create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(label, "position", label.position + Vector2(0, -40), 0.5)
+	tween.tween_property(label, "modulate:a", 0.0, 0.5)
+	tween.finished.connect(func():
+		if is_instance_valid(label):
+			label.queue_free()
+	)
 
 func _physics_process(delta: float) -> void:
 	if pause_toggle_lock_frames > 0:
@@ -483,6 +521,7 @@ func take_damage_and_respawn(amount: int, respawn_target: Node2D) -> void:
 	player_state.apply_damage(amount)
 	current_health = player_state.current_health
 	print("Player health: ", current_health)
+	_show_damage_popup(amount)
 
 	if player_state.current_health <= 0:
 		change_state(PlayerState.DEAD)

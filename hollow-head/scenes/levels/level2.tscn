@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://b7ovjqjyg0aqj"]
+[gd_scene load_steps=11 format=4 uid="uid://b7ovjqjyg0aqj"]
 
 [ext_resource type="Texture2D" uid="uid://cpoyy070cdoj1" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/environment/layers/back-preview.png" id="1_71baw"]
 [ext_resource type="PackedScene" uid="uid://e7ihj1pv4fmu" path="res://scenes/player/Player.tscn" id="1_d5djh"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bl4wv2qpthcg1" path="res://scenes/player/dragon.tscn" id="1_ok6xr"]
 [ext_resource type="Texture2D" uid="uid://h4ipbtojb746" path="res://assets/background/1 Gothicvania Church/ENVIRONMENT/tileset.png" id="2_71baw"]
 [ext_resource type="Texture2D" uid="uid://chsxmc4t0va46" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/environment/layers/tileset.png" id="3_71baw"]
+[ext_resource type="AudioStream" uid="uid://bci3ri4l5cxta" path="res://assets/music/Through Mountains.wav" id="7_dj4wq"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_niitk"]
 texture = ExtResource("2_71baw")
@@ -207,3 +208,7 @@ position = Vector2(1065, 467)
 
 [node name="BottomLeftMarker" type="Marker2D" parent="." groups=["waypoints"]]
 position = Vector2(102, 467)
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_dj4wq")
+autoplay = true

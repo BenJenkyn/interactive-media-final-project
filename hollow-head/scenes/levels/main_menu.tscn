@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://co3rijh2nllys"]
+[gd_scene load_steps=4 format=3 uid="uid://co3rijh2nllys"]
 
 [ext_resource type="Script" uid="uid://bulkrp38gw7rh" path="res://scenes/levels/main_menu.gd" id="1_721jg"]
 [ext_resource type="Texture2D" uid="uid://bweae3n8f5yaf" path="res://assets/background/1 Gothicvania Swamp files/PSD/preview.png" id="1_l6cm7"]
+[ext_resource type="AudioStream" uid="uid://cw1vwckw6ns2b" path="res://assets/music/Menu Theme.wav" id="3_721jg"]
 
 [node name="MainMenu" type="Node2D"]
 script = ExtResource("1_721jg")
@@ -60,3 +61,7 @@ text = "Press Enter To Start"
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 24
+
+[node name="Music" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_721jg")
+autoplay = true
