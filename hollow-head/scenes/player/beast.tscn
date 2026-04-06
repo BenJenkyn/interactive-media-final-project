@@ -60,7 +60,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("3_ykx7s")
 }, {
-"duration": 1.0,
+"duration": 5.0,
 "texture": ExtResource("4_v7uo1")
 }],
 "loop": false,
@@ -291,11 +291,20 @@ animations = [{
 }]
 
 [node name="Beast" type="CharacterBody2D" groups=["enemy"]]
-scale = Vector2(3, 3)
+scale = Vector2(2.5, 2.5)
 collision_layer = 512
 collision_mask = 16
 script = ExtResource("1_0vgns")
 projectile_scene = ExtResource("2_ykx7s")
+
+[node name="HealthWarningLabel" type="Label" parent="."]
+offset_left = -45.666668
+offset_top = -58.666664
+offset_right = -44.666668
+offset_bottom = -30.666664
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 2)
@@ -305,6 +314,8 @@ shape = SubResource("CapsuleShape2D_h08qo")
 position = Vector2(-3, -53)
 sprite_frames = SubResource("SpriteFrames_yrivk")
 animation = &"attack"
+frame = 3
+frame_progress = 1.0
 
 [node name="Hurtbox" type="Area2D" parent="."]
 position = Vector2(3.0000002, -2)
@@ -319,6 +330,7 @@ shape = SubResource("CapsuleShape2D_h08qo")
 position = Vector2(-17, 0)
 
 [node name="TeleportOutEffect" type="AnimatedSprite2D" parent="."]
+visible = false
 position = Vector2(2.6666667, -51)
 sprite_frames = SubResource("SpriteFrames_wyhit")
 animation = &"teleport_out"
@@ -326,6 +338,7 @@ frame = 5
 frame_progress = 1.0
 
 [node name="TeleportInEffect" type="AnimatedSprite2D" parent="."]
+visible = false
 position = Vector2(3, -51.333336)
 sprite_frames = SubResource("SpriteFrames_mqdh4")
 animation = &"teleport_in"
@@ -351,7 +364,7 @@ shape = SubResource("RectangleShape2D_v7uo1")
 disabled = true
 
 [node name="Teleportsignal" type="AnimatedSprite2D" parent="."]
-position = Vector2(0.6666666, 3.3333335)
+position = Vector2(0.8, 4)
 sprite_frames = SubResource("SpriteFrames_88diw")
 animation = &"signal"
 frame_progress = 0.33037916
