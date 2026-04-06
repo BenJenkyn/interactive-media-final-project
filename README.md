@@ -1,6 +1,6 @@
 # Interactive Media Final Project
 
-## How to play
+## How to Play
 
 Start from the main menu and fight through 3 levels.
 
