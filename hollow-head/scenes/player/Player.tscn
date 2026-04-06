@@ -232,7 +232,7 @@ volume_db = 5.0
 
 [node name="LandSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("35_a4b0l")
-volume_db = 10.0
+volume_db = 5.0
 
 [node name="DashSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("36_u3hyo")
