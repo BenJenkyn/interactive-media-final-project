@@ -121,7 +121,7 @@ func _physics_process(delta: float) -> void:
 			_update_attack_boxes_and_flame()
 
 		State.CLOSE_ATTACK:
-			_process_close_attack(delta)
+			_process_close_attack()
 
 		State.DEAD:
 			velocity = Vector2.ZERO
@@ -267,7 +267,7 @@ func _process_idle(delta: float) -> void:
 		move_direction = move_direction.bounce(get_wall_normal()).normalized()
 		reset_direction_timer()
 
-func _process_close_attack(delta: float) -> void:
+func _process_close_attack() -> void:
 	if not close_attack_returning:
 		var to_target := close_attack_target - global_position
 		var should_pause_for_fire: bool = high_dash_attack_sprite.frame >= close_attack_flame_start_frame - 1

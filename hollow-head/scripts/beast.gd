@@ -120,9 +120,9 @@ func _physics_process(delta: float) -> void:
 		State.IDLE:
 			update_idle(delta)
 		State.ATTACKING:
-			update_attacking(delta)
+			update_attacking()
 		State.TELEPORTING:
-			update_teleporting(delta)
+			update_teleporting()
 		State.DEAD:
 			return
 
@@ -141,12 +141,12 @@ func update_idle(delta: float) -> void:
 			transition_to_state(State.ATTACKING)
 			start_attack()
 
-func update_attacking(delta: float) -> void:
+func update_attacking() -> void:
 	if anim.animation == "attack" and anim.frame >= shoot_frame and not has_shot:
 		has_shot = true
 		fireball_burst()
 
-func update_teleporting(delta: float) -> void:
+func update_teleporting() -> void:
 	pass
 
 func transition_to_state(new_state: State) -> void:

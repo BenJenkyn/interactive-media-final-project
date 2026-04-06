@@ -11,10 +11,5 @@ func _ready() -> void:
 	player_state.reset_run()
 	pass # Replace with function body.
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
 func _on_start_pressed():
 	level_state.change_state(level_state.LevelStateEnum.LEVEL1)
