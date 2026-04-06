@@ -8,6 +8,7 @@ func _ready() -> void:
 	victory_count_label.text = "Victories: " + str(player_state.victory_count)
 	start_button.pressed.connect(_on_start_pressed)
 	start_button.grab_focus()
+	player_state.reset_run()
 	pass # Replace with function body.
 
 
