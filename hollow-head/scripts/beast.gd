@@ -400,7 +400,7 @@ func take_damage(amount: int) -> void:
 
 	print("Beast health: ", current_health)
 
-	anim.modulate = Color(1, 0.3, 0.3)
+	anim.modulate = Color(2, 2, 2)
 	await get_tree().create_timer(0.1).timeout
 
 	if current_state != State.DEAD:
