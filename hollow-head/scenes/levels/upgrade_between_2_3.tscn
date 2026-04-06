@@ -52,8 +52,7 @@ offset_top = 290.0
 offset_right = 340.0
 offset_bottom = 430.0
 theme_override_font_sizes/font_size = 22
-text = "Unlock Throw
-Throw a projectile
+text = "Unlock a Projectile
 (Q)"
 
 [node name="UpgradeButton2" type="Button" parent="."]
@@ -63,8 +62,8 @@ offset_top = 290.0
 offset_right = 700.0
 offset_bottom = 430.0
 theme_override_font_sizes/font_size = 22
-text = "Move Faster
-Increase  Walk Speed"
+text = "Increase Walk Speed
+(+50 movement)"
 
 [node name="UpgradeButton3" type="Button" parent="."]
 layout_mode = 0
@@ -74,4 +73,4 @@ offset_right = 1060.0
 offset_bottom = 430.0
 theme_override_font_sizes/font_size = 22
 text = "More Hearts
-+2 Max Health"
+(+2 Max Health)"
