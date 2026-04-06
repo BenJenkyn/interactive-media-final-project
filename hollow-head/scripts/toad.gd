@@ -33,6 +33,7 @@ extends CharacterBody2D
 @onready var jump_sound = $SoundEffects/JumpSound
 @onready var big_jump_sound = $SoundEffects/BigJumpSound
 @onready var tongue_sound = $SoundEffects/TongueSound
+@onready var death_sound = $SoundEffects/DeathSound
 
 enum State {
 	IDLE,
@@ -418,26 +419,12 @@ func _on_attack_area_body_entered(body: Node) -> void:
 		body.take_damage(attack_damage)
 		attack_has_hit = true
 
-func _get_player_attack_damage(area: Area2D) -> int:
-	if area == null:
-		return 1
-
-	var owner_node := area.owner
-	if owner_node != null and owner_node.has_method("get_attack_damage"):
-		return owner_node.get_attack_damage()
-
-	var parent_node := area.get_parent()
-	if parent_node != null and parent_node.has_method("get_attack_damage"):
-		return parent_node.get_attack_damage()
-
-	return 1
-
 func _on_hurtbox_area_entered(area: Area2D) -> void:
 	if is_dead:
 		return
 
 	if area.is_in_group("player_attack"):
-		take_damage(_get_player_attack_damage(area))
+		take_damage(1)
 
 func _update_attack_area_side(direction: float) -> void:
 	var new_x: float = abs(attack_area_x_offset)
@@ -548,7 +535,8 @@ func die() -> void:
 	current_state = State.DEAD
 	hurtbox.monitoring = false
 	hurtbox.monitorable = false
+	death_sound.play()
 	anim.play("death")
 	await anim.animation_finished
 	queue_free()
-	level_state.change_state(level_state.LevelStateEnum.UPGRADE_BETWEEN_1_2)
+	level_state.change_state(level_state.LevelStateEnum.LEVEL2)

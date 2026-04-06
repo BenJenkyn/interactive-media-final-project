@@ -29,6 +29,7 @@ enum State {
 @onready var teleport_in_effect: AnimatedSprite2D = $TeleportInEffect
 @onready var teleport_signal: AnimatedSprite2D = $Teleportsignal
 @onready var death_animation: AnimatedSprite2D = $DeathAnimation
+@onready var death_sound: AudioStreamPlayer2D = $DeathSound
 
 @onready var teleport_out_damage: Area2D = $TeleportOutDamage
 @onready var teleport_out_damage_shape: CollisionShape2D = $TeleportOutDamage/CollisionShape2D
@@ -207,6 +208,7 @@ func enter_dead() -> void:
 	teleport_in_damage_shape.disabled = true
 	anim.visible = false
 	death_animation.visible = true
+	death_sound.play()
 	death_animation.play("dead")
 	health_warning_label.visible = false
 

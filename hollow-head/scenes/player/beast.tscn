@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=3 uid="uid://i8ted54dl21m"]
+[gd_scene load_steps=52 format=3 uid="uid://i8ted54dl21m"]
 
 [ext_resource type="Script" uid="uid://d2dux5sjgb2b0" path="res://scripts/beast.gd" id="1_0vgns"]
 [ext_resource type="Texture2D" uid="uid://cdnifa7jhnjhd" path="res://assets/enemies/1 Hell-Beast-Files/Breath/Sprites/hell-beast-breath1.png" id="1_h08qo"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://d0elqhako5b2f" path="res://assets/enemies/1 demon-Files/Sprites/Death/enemy-death-3.png" id="16_yrivk"]
 [ext_resource type="Texture2D" uid="uid://bdsm0cy42tbxv" path="res://assets/enemies/1 demon-Files/Sprites/Death/enemy-death-4.png" id="17_wyhit"]
 [ext_resource type="Texture2D" uid="uid://d3pm6k2a0ni3j" path="res://assets/enemies/1 demon-Files/Sprites/Death/enemy-death-5.png" id="18_3xtlu"]
+[ext_resource type="PackedScene" uid="uid://b1h6kleyhrkvn" path="res://scenes/sfx/death_sound.tscn" id="20_yrivk"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_h08qo"]
 radius = 20.0
@@ -373,3 +374,5 @@ frame_progress = 0.33037916
 position = Vector2(0, 3.3333335)
 sprite_frames = SubResource("SpriteFrames_47ybc")
 animation = &"dead"
+
+[node name="DeathSound" parent="." instance=ExtResource("20_yrivk")]

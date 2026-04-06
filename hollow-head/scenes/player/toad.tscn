@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://dgtrng7x87fd3"]
+[gd_scene load_steps=29 format=3 uid="uid://dgtrng7x87fd3"]
 
 [ext_resource type="Texture2D" uid="uid://r1gi3i706yv5" path="res://assets/enemies/1 mutant-toad/Sprites/attack/mutant-toad-attack1.png" id="1_eqe02"]
 [ext_resource type="Script" uid="uid://dlyuf8wd3olwr" path="res://scripts/toad.gd" id="1_ke71q"]
@@ -17,6 +17,7 @@
 [ext_resource type="AudioStream" uid="uid://cbiuft21jgwxk" path="res://assets/sound_effects/pick.wav" id="15_hojxr"]
 [ext_resource type="AudioStream" uid="uid://cdkol76m3srqa" path="res://assets/sound_effects/jump.wav" id="16_n6m22"]
 [ext_resource type="AudioStream" uid="uid://ce6xctqxmb5si" path="res://assets/sound_effects/hurt.wav" id="17_q1h80"]
+[ext_resource type="PackedScene" uid="uid://b1h6kleyhrkvn" path="res://scenes/sfx/death_sound.tscn" id="18_xnikt"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cicnq"]
 atlas = ExtResource("5_rqtxo")
@@ -204,3 +205,5 @@ stream = ExtResource("16_n6m22")
 
 [node name="TongueSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("17_q1h80")
+
+[node name="DeathSound" parent="SoundEffects" instance=ExtResource("18_xnikt")]
