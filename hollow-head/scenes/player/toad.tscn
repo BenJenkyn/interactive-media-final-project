@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dgtrng7x87fd3"]
+[gd_scene load_steps=28 format=3 uid="uid://dgtrng7x87fd3"]
 
 [ext_resource type="Texture2D" uid="uid://r1gi3i706yv5" path="res://assets/enemies/1 mutant-toad/Sprites/attack/mutant-toad-attack1.png" id="1_eqe02"]
 [ext_resource type="Script" uid="uid://dlyuf8wd3olwr" path="res://scripts/toad.gd" id="1_ke71q"]
@@ -13,6 +13,10 @@
 [ext_resource type="Texture2D" uid="uid://xjn3e4xba7om" path="res://assets/enemies/1 mutant-toad/Sprites/jump/mutant-toad-jump2.png" id="9_4jkyk"]
 [ext_resource type="Texture2D" uid="uid://dvbigi0rcmdji" path="res://assets/enemies/1 mutant-toad/Sprites/jump/mutant-toad-jump3.png" id="10_t5r6t"]
 [ext_resource type="Texture2D" uid="uid://qgwnd1supsqv" path="res://assets/enemies/1 mutant-toad/Sprites/jump/mutant-toad-jump4.png" id="11_akb4s"]
+[ext_resource type="AudioStream" uid="uid://bmfsirvfj11a6" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/fx/stomp.wav" id="14_cicnq"]
+[ext_resource type="AudioStream" uid="uid://cbiuft21jgwxk" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/fx/pick.wav" id="15_hojxr"]
+[ext_resource type="AudioStream" uid="uid://cdkol76m3srqa" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/fx/jump.wav" id="16_n6m22"]
+[ext_resource type="AudioStream" uid="uid://ce6xctqxmb5si" path="res://assets/background/1 Gothicvania Church/Stomper Asset Files/fx/hurt.wav" id="17_q1h80"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cicnq"]
 atlas = ExtResource("5_rqtxo")
@@ -146,7 +150,7 @@ height = 36.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ke71q"]
 size = Vector2(39.5, 3)
 
-[node name="Enemy" type="CharacterBody2D" groups=["enemy"]]
+[node name="Toad" type="CharacterBody2D" groups=["enemy"]]
 scale = Vector2(2, 2)
 collision_layer = 512
 collision_mask = 16
@@ -164,7 +168,7 @@ horizontal_alignment = 1
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -15)
 sprite_frames = SubResource("SpriteFrames_cp3xb")
-animation = &"death"
+animation = &"attack"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -1)
@@ -185,3 +189,18 @@ collision_mask = 32
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
 position = Vector2(7.25, -0.5)
 shape = SubResource("RectangleShape2D_ke71q")
+
+[node name="SoundEffects" type="Node" parent="."]
+
+[node name="StompSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
+scale = Vector2(2, 2)
+stream = ExtResource("14_cicnq")
+
+[node name="JumpSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("15_hojxr")
+
+[node name="BigJumpSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("16_n6m22")
+
+[node name="TongueSound" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("17_q1h80")

@@ -28,6 +28,12 @@ extends CharacterBody2D
 @onready var attack_shape: CollisionShape2D = $AttackArea/CollisionShape2D
 @onready var health_warning_label: Label = $HealthWarningLabel
 
+# Sound Effects
+@onready var stomp_sound = $SoundEffects/StompSound
+@onready var jump_sound = $SoundEffects/JumpSound
+@onready var big_jump_sound = $SoundEffects/BigJumpSound
+@onready var tongue_sound = $SoundEffects/TongueSound
+
 enum State {
 	IDLE,
 	MOVE,
@@ -133,6 +139,7 @@ func _physics_process(delta: float) -> void:
 		is_big_jumping = false
 		big_jump_velocity_x = 0.0
 		global_position.x = big_jump_target_x
+		stomp_sound.play()
 		change_state(State.IDLE)
 
 	_update_animation()
@@ -337,6 +344,8 @@ func _start_attack() -> void:
 	velocity.x = 0.0
 	_reset_jump_offsets()
 	anim.play("attack")
+	# TODO make the sound effect play on frame 3
+	tongue_sound.play()
 
 func _finish_attack() -> void:
 	is_attacking = false
@@ -350,6 +359,7 @@ func _finish_attack() -> void:
 
 func _start_normal_jump() -> void:
 	velocity.y = normal_jump_force
+	jump_sound.play()
 	_reset_normal_jump_timer()
 
 func _start_big_jump() -> void:
@@ -376,6 +386,7 @@ func _start_big_jump() -> void:
 		_update_attack_area_side(sign(distance_x))
 
 	anim.play("jump")
+	big_jump_sound.play()
 	_reset_big_jump_timer()
 
 func _reset_normal_jump_timer() -> void:
