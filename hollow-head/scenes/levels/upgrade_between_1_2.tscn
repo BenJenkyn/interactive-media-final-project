@@ -1,0 +1,76 @@
+[gd_scene load_steps=3 format=3 uid="uid://bri0bp4w5o3kp"]
+
+[ext_resource type="Script" uid="uid://bsv8futwrf8mr" path="res://scripts/upgrade_between_1_2.gd" id="1_227qt"]
+[ext_resource type="Texture2D" uid="uid://b8ibl7fk1b5gr" path="res://assets/background/1 Gothicvania Church/ENVIRONMENT/column.png" id="1_lul8j"]
+
+[node name="UpgradeBetween1And2" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_227qt")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.33333334, 0, 0.7019608, 1)
+
+[node name="TextureRect" type="TextureRect" parent="Background"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 383.0
+grow_vertical = 2
+texture = ExtResource("1_lul8j")
+
+[node name="TextureRect2" type="TextureRect" parent="Background"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -371.0
+grow_horizontal = 0
+grow_vertical = 2
+texture = ExtResource("1_lul8j")
+flip_h = true
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 430.0
+offset_top = 60.0
+offset_right = 581.0
+offset_bottom = 83.0
+theme_override_font_sizes/font_size = 32
+text = "Choose an Upgrade"
+
+[node name="UpgradeButton1" type="Button" parent="."]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 290.0
+offset_right = 340.0
+offset_bottom = 430.0
+theme_override_font_sizes/font_size = 22
+text = "Unlock Dodge
+Gain The Dodge Ability"
+
+[node name="UpgradeButton2" type="Button" parent="."]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 290.0
+offset_right = 700.0
+offset_bottom = 430.0
+theme_override_font_sizes/font_size = 22
+text = "Extra Heart
++3 Max Health"
+
+[node name="UpgradeButton3" type="Button" parent="."]
+layout_mode = 0
+offset_left = 810.0
+offset_top = 290.0
+offset_right = 1060.0
+offset_bottom = 430.0
+theme_override_font_sizes/font_size = 22
+text = "More Damage
+Increase attack power"

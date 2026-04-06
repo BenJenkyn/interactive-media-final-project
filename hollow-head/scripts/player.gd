@@ -29,6 +29,8 @@ enum PlayerState {
 @export var knockback_separation_distance: float = 8.0
 
 @export var throw_unlocked: bool = false
+@export var dodge_unlocked: bool = false
+@export var base_attack_damage: int = 1
 
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var attack_area: Area2D = $AttackArea
@@ -59,13 +61,21 @@ var current_health: int
 var can_take_damage: bool = true
 var hurt_source_x: float = 0.0
 var respawn_point: Node2D = null
+var attack_damage: int = 1
 
 func _ready() -> void:
-	current_health = max_health
-	player_state.max_health = max_health
-	player_state.current_health = current_health
+	max_health = player_state.max_health
+	current_health = player_state.current_health
 
 	throw_unlocked = player_state.throw_unlocked
+	dodge_unlocked = player_state.dodge_unlocked
+
+	speed += player_state.move_speed_bonus
+	attack_damage = base_attack_damage + player_state.attack_damage_bonus
+
+	player_state.max_health = max_health
+	player_state.current_health = current_health
+	player_state.health_changed.emit(current_health, max_health)
 
 	_ensure_pause_action_binding()
 	attack_area.monitoring = false
@@ -199,7 +209,7 @@ func _state_idle(input_x: float) -> void:
 
 	_update_facing_visuals()
 
-	if Input.is_action_just_pressed("dodge") and is_on_floor():
+	if dodge_unlocked and Input.is_action_just_pressed("dodge") and is_on_floor():
 		if input_x != 0:
 			facing = sign(input_x)
 		change_state(PlayerState.DODGE)
@@ -231,7 +241,7 @@ func _state_run(input_x: float) -> void:
 
 	_update_facing_visuals()
 
-	if Input.is_action_just_pressed("dodge") and is_on_floor():
+	if dodge_unlocked and Input.is_action_just_pressed("dodge") and is_on_floor():
 		if input_x != 0:
 			facing = sign(input_x)
 		change_state(PlayerState.DODGE)
@@ -369,7 +379,15 @@ func spawn_projectile() -> void:
 	var projectile = projectile_scene.instantiate()
 	get_tree().current_scene.add_child(projectile)
 	projectile.global_position = projectile_spawn.global_position
-	projectile.setup(throw_facing)
+
+	if projectile.has_method("setup"):
+		projectile.setup(throw_facing)
+
+	if "damage" in projectile:
+		projectile.damage = attack_damage
+
+func get_attack_damage() -> int:
+	return attack_damage
 
 func _handle_pause_input() -> void:
 	if is_dead:

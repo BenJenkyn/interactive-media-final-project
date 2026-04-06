@@ -147,8 +147,7 @@ func update_teleporting(delta: float) -> void:
 func transition_to_state(new_state: State) -> void:
 	if current_state == new_state:
 		return
-	
-	# Exit current state
+
 	match current_state:
 		State.IDLE:
 			exit_idle()
@@ -158,9 +157,9 @@ func transition_to_state(new_state: State) -> void:
 			exit_teleporting()
 		State.DEAD:
 			exit_dead()
-	
-	# Enter new state
+
 	current_state = new_state
+
 	match current_state:
 		State.IDLE:
 			enter_idle()
@@ -345,12 +344,26 @@ func _on_teleport_damage_area_entered(area: Area2D) -> void:
 	if area.is_in_group("player_hurtbox"):
 		damage_target(area)
 
+func _get_player_attack_damage(area: Area2D) -> int:
+	if area == null:
+		return 1
+
+	var owner_node := area.owner
+	if owner_node != null and owner_node.has_method("get_attack_damage"):
+		return owner_node.get_attack_damage()
+
+	var parent_node := area.get_parent()
+	if parent_node != null and parent_node.has_method("get_attack_damage"):
+		return parent_node.get_attack_damage()
+
+	return 1
+
 func _on_hurtbox_area_entered(area: Area2D) -> void:
 	if current_state == State.DEAD:
 		return
 
 	if area.is_in_group("player_attack"):
-		take_damage(1)
+		take_damage(_get_player_attack_damage(area))
 
 func take_damage(amount: int) -> void:
 	if current_state == State.DEAD:
