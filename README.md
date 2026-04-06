@@ -22,6 +22,8 @@ https://pixabay.com/sound-effects/film-special-effects-zoom-sound-effect-125029/
 
 https://pixabay.com/sound-effects/film-special-effects-burn-408439/
 
+https://megumi-ryu.itch.io/mp3onevictory-fanfare-16bit
+
 Player -> Layer 1 / Mask 2,5
 Enemy -> Layer 2 / Mask 1,3,4,5
 AttackArea -> Layer 3 / Mask 2
