@@ -16,4 +16,4 @@ func _process(delta: float) -> void:
 	pass
 
 func _on_start_pressed():
-	level_state.change_state(level_state.LevelStateEnum.LEVEL3)
+	level_state.change_state(level_state.LevelStateEnum.LEVEL1)

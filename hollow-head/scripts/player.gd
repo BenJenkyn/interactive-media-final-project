@@ -40,6 +40,13 @@ enum PlayerState {
 @onready var hurtbox: Area2D = $Hurtbox
 @onready var hurtbox_shape: CollisionShape2D = $Hurtbox/CollisionShape2D
 
+@onready var attack_sound: AudioStreamPlayer2D = $SoundEffects/AttackSound
+@onready var jump_sound: AudioStreamPlayer2D = $SoundEffects/JumpSound
+@onready var land_sound: AudioStreamPlayer2D = $SoundEffects/LandSound
+@onready var dash_sound: AudioStreamPlayer2D = $SoundEffects/DashSound
+@onready var hurt_sound: AudioStreamPlayer2D = $SoundEffects/HurtSound
+@onready var death_sound: AudioStreamPlayer2D = $SoundEffects/DeathSound
+
 var pause_menu_scene = preload("res://scenes/UI/pause_menu.tscn")
 var overlay_menu: CanvasLayer = null
 var pause_toggle_lock_frames: int = 0
@@ -66,6 +73,7 @@ var attack_damage: int = 1
 var movement_locked: bool = false
 
 var damage_popup_layer: CanvasLayer = null
+var was_on_floor: bool = false
 
 func _ready() -> void:
 	max_health = player_state.max_health
@@ -90,6 +98,9 @@ func _ready() -> void:
 	dash_timer.wait_time = dodge_time
 	hurtbox.area_entered.connect(_on_hurtbox_area_entered)
 	hurtbox.body_entered.connect(_on_hurtbox_body_entered)
+
+	was_on_floor = is_on_floor()
+
 	change_state(PlayerState.IDLE)
 
 func _ensure_pause_action_binding() -> void:
@@ -135,6 +146,17 @@ func _show_damage_popup(amount: int) -> void:
 			label.queue_free()
 	)
 
+func _play_sound(player: AudioStreamPlayer2D, random_pitch: bool = false) -> void:
+	if player == null:
+		return
+
+	if random_pitch:
+		player.pitch_scale = randf_range(0.95, 1.05)
+	else:
+		player.pitch_scale = 1.0
+
+	player.play()
+
 func _physics_process(delta: float) -> void:
 	if pause_toggle_lock_frames > 0:
 		pause_toggle_lock_frames -= 1
@@ -144,6 +166,7 @@ func _physics_process(delta: float) -> void:
 	if is_dead:
 		velocity = Vector2.ZERO
 		move_and_slide()
+		was_on_floor = is_on_floor()
 		return
 
 	if movement_locked:
@@ -154,6 +177,7 @@ func _physics_process(delta: float) -> void:
 			change_state(PlayerState.IDLE)
 
 		move_and_slide()
+		was_on_floor = is_on_floor()
 		return
 
 	var input_x := Input.get_axis("move_left", "move_right")
@@ -182,6 +206,13 @@ func _physics_process(delta: float) -> void:
 			_state_dead()
 
 	move_and_slide()
+
+	var landed_this_frame: bool = not was_on_floor and is_on_floor()
+	if landed_this_frame and not is_dead and not movement_locked:
+		_play_sound(land_sound)
+
+	was_on_floor = is_on_floor()
+
 	_update_air_state()
 
 func change_state(new_state: PlayerState) -> void:
@@ -202,6 +233,7 @@ func change_state(new_state: PlayerState) -> void:
 		PlayerState.JUMP:
 			anim.modulate.a = 1.0
 			anim.play("jump")
+			_play_sound(jump_sound)
 
 		PlayerState.FALL:
 			anim.modulate.a = 1.0
@@ -215,6 +247,7 @@ func change_state(new_state: PlayerState) -> void:
 			attack_area.monitoring = true
 			attack_shape.disabled = false
 			anim.play("attack")
+			_play_sound(attack_sound, true)
 
 		PlayerState.THROW:
 			anim.modulate.a = 1.0
@@ -234,6 +267,7 @@ func change_state(new_state: PlayerState) -> void:
 			anim.flip_h = dodge_facing < 0
 			anim.play("dodge")
 			dash_timer.start(dodge_time)
+			_play_sound(dash_sound)
 
 		PlayerState.HURT:
 			anim.modulate.a = 1.0
@@ -241,6 +275,7 @@ func change_state(new_state: PlayerState) -> void:
 				anim.play("hurt")
 			else:
 				anim.play("idle")
+			_play_sound(hurt_sound)
 
 		PlayerState.DEAD:
 			anim.modulate.a = 1.0
@@ -248,6 +283,7 @@ func change_state(new_state: PlayerState) -> void:
 				anim.play("dead")
 			else:
 				anim.play("idle")
+			_play_sound(death_sound)
 
 func _state_idle(input_x: float) -> void:
 	velocity.x = 0.0
