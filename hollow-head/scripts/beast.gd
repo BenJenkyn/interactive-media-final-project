@@ -17,6 +17,7 @@ enum State {
 @export var teleport_damage_amount: int = 1
 @export var teleport_signal_time: float = 0.5
 @export var teleport_in_signal_time: float = 0.7
+@export_range(0.0, 1.0, 0.01) var teleport_to_player_chance: float = 0.5
 
 @export var fireballs_per_attack: int = 3
 @export var time_between_fireballs: float = 0.25
@@ -189,7 +190,7 @@ func exit_attacking() -> void:
 func enter_teleporting() -> void:
 	has_shot = false
 	velocity = Vector2.ZERO
-	pending_teleport_position = get_random_teleport_position()
+	pending_teleport_position = get_teleport_position()
 	teleport_hit_targets.clear()
 	teleport_out_effect.visible = true
 	teleport_out_damage_shape.disabled = false
@@ -242,6 +243,12 @@ func start_attack() -> void:
 
 func start_teleport_attack() -> void:
 	pass
+
+func get_teleport_position() -> Vector2:
+	if target != null and randf() < teleport_to_player_chance:
+		return target.global_position
+
+	return get_random_teleport_position()
 
 func get_random_teleport_position() -> Vector2:
 	if teleport_points.is_empty():
