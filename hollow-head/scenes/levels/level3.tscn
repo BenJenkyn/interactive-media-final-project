@@ -107,26 +107,59 @@ position = Vector2(1064, 397)
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+[node name="LavaFlowImage3" type="TextureRect" parent="CanvasLayer"]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -60.0
-offset_top = -60.0
-offset_right = -60.0
+offset_left = -11.0
+offset_top = -140.0
+offset_right = -11.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(1.2, 1.2)
+pivot_offset = Vector2(330, 40.833313)
+texture = ExtResource("8_8w0pe")
+stretch_mode = 1
+
+[node name="LavaFlowImage2" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -72.0
+offset_top = -109.0
+offset_right = -72.0
+offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 0
 scale = Vector2(1.2, 1.2)
 texture = ExtResource("8_8w0pe")
 stretch_mode = 1
 
+[node name="LavaFlowImage" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_top = -57.0
+offset_right = -2.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(1.2, 1.2)
+pivot_offset = Vector2(330, 40.833313)
+texture = ExtResource("8_8w0pe")
+stretch_mode = 1
+
 [node name="LavaArea2d" type="Area2D" parent="CanvasLayer"]
-position = Vector2(-51, 601)
+position = Vector2(35, -120)
 collision_mask = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CanvasLayer/LavaArea2d"]
-position = Vector2(681.5, 23.5)
+position = Vector2(588, 690)
 shape = SubResource("RectangleShape2D_8w0pe")
 
 [connection signal="area_exited" from="CanvasLayer/LavaArea2d" to="Player" method="_on_lava_area_2d_area_exited"]
