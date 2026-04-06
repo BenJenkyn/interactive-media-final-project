@@ -63,6 +63,9 @@ var has_spawned_projectile: bool = false
 
 var dodge_flash_timer: float = 0.0
 var dodge_flash_interval: float = 0.05
+var invulnerability_flash_timer: float = 0.0
+var invulnerability_flash_interval: float = 0.06
+var invulnerability_flash_on: bool = false
 
 var current_health: int
 var can_take_damage: bool = true
@@ -164,12 +167,14 @@ func _physics_process(delta: float) -> void:
 	_handle_pause_input()
 
 	if is_dead:
+		_reset_invulnerability_flash()
 		velocity = Vector2.ZERO
 		move_and_slide()
 		was_on_floor = is_on_floor()
 		return
 
 	if movement_locked:
+		_reset_invulnerability_flash()
 		velocity = Vector2.ZERO
 		_update_facing_visuals()
 
@@ -214,6 +219,33 @@ func _physics_process(delta: float) -> void:
 	was_on_floor = is_on_floor()
 
 	_update_air_state()
+	_update_invulnerability_flash(delta)
+
+func _update_invulnerability_flash(delta: float) -> void:
+	if can_take_damage or is_dead or state == PlayerState.DEAD:
+		_reset_invulnerability_flash()
+		return
+
+	invulnerability_flash_timer += delta
+	if invulnerability_flash_timer >= invulnerability_flash_interval:
+		invulnerability_flash_timer = 0.0
+		invulnerability_flash_on = not invulnerability_flash_on
+
+	if invulnerability_flash_on:
+		anim.modulate.r = 1.8
+		anim.modulate.g = 1.8
+		anim.modulate.b = 1.8
+	else:
+		anim.modulate.r = 1.0
+		anim.modulate.g = 1.0
+		anim.modulate.b = 1.0
+
+func _reset_invulnerability_flash() -> void:
+	invulnerability_flash_timer = 0.0
+	invulnerability_flash_on = false
+	anim.modulate.r = 1.0
+	anim.modulate.g = 1.0
+	anim.modulate.b = 1.0
 
 func change_state(new_state: PlayerState) -> void:
 	if state == new_state:
