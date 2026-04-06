@@ -53,7 +53,8 @@ offset_right = 340.0
 offset_bottom = 430.0
 theme_override_font_sizes/font_size = 22
 text = "Unlock Dodge
-Gain The Dodge Ability"
+Gain The Dodge Ability 
+(Shift)"
 
 [node name="UpgradeButton2" type="Button" parent="."]
 layout_mode = 0
