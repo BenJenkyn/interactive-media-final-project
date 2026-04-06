@@ -16,6 +16,8 @@ https://pixabay.com/sound-effects/film-special-effects-cartoon-jump-6462/
 
 https://pixabay.com/sound-effects/film-special-effects-human-impact-on-ground-6982/
 
+https://pixabay.com/sound-effects/film-special-effects-hit-by-a-wood-230542/
+
 Player -> Layer 1 / Mask 2,5
 Enemy -> Layer 2 / Mask 1,3,4,5
 AttackArea -> Layer 3 / Mask 2
