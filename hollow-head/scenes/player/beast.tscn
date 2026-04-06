@@ -375,4 +375,7 @@ position = Vector2(0, 3.3333335)
 sprite_frames = SubResource("SpriteFrames_47ybc")
 animation = &"dead"
 
-[node name="DeathSound" parent="." instance=ExtResource("20_yrivk")]
+[node name="SoundEffects" type="Node2D" parent="."]
+
+[node name="DeathSound" parent="SoundEffects" instance=ExtResource("20_yrivk")]
+scale = Vector2(0.99999994, 0.99999994)
