@@ -29,6 +29,7 @@ enum PlayerState {
 @export var knockback_separation_distance: float = 8.0
 
 @export var throw_unlocked: bool = false
+@export var throw_cooldown: float = 0.5
 @export var dodge_unlocked: bool = false
 @export var base_attack_damage: int = 1
 
@@ -60,6 +61,7 @@ var throw_facing: float = 1.0
 var dodge_facing: float = 1.0
 
 var has_spawned_projectile: bool = false
+var throw_cooldown_timer: float = 0.0
 
 var dodge_flash_timer: float = 0.0
 var dodge_flash_interval: float = 0.05
@@ -161,6 +163,9 @@ func _play_sound(player: AudioStreamPlayer2D, random_pitch: bool = false) -> voi
 	player.play()
 
 func _physics_process(delta: float) -> void:
+	if throw_cooldown_timer > 0.0:
+		throw_cooldown_timer = max(0.0, throw_cooldown_timer - delta)
+
 	if pause_toggle_lock_frames > 0:
 		pause_toggle_lock_frames -= 1
 
@@ -284,6 +289,7 @@ func change_state(new_state: PlayerState) -> void:
 		PlayerState.THROW:
 			anim.modulate.a = 1.0
 			throw_facing = facing
+			throw_cooldown_timer = throw_cooldown
 			projectile_spawn.position.x = abs(projectile_spawn.position.x) * throw_facing
 			anim.flip_h = throw_facing < 0
 			has_spawned_projectile = false
@@ -337,7 +343,7 @@ func _state_idle(input_x: float) -> void:
 		change_state(PlayerState.ATTACK)
 		return
 
-	if throw_unlocked and Input.is_action_just_pressed("throw"):
+	if throw_unlocked and throw_cooldown_timer <= 0.0 and Input.is_action_just_pressed("throw"):
 		change_state(PlayerState.THROW)
 		return
 
@@ -369,7 +375,7 @@ func _state_run(input_x: float) -> void:
 		change_state(PlayerState.ATTACK)
 		return
 
-	if throw_unlocked and Input.is_action_just_pressed("throw"):
+	if throw_unlocked and throw_cooldown_timer <= 0.0 and Input.is_action_just_pressed("throw"):
 		change_state(PlayerState.THROW)
 		return
 
@@ -395,7 +401,7 @@ func _state_jump(input_x: float) -> void:
 		change_state(PlayerState.ATTACK)
 		return
 
-	if throw_unlocked and Input.is_action_just_pressed("throw"):
+	if throw_unlocked and throw_cooldown_timer <= 0.0 and Input.is_action_just_pressed("throw"):
 		change_state(PlayerState.THROW)
 		return
 
@@ -416,7 +422,7 @@ func _state_fall(input_x: float) -> void:
 		change_state(PlayerState.ATTACK)
 		return
 
-	if throw_unlocked and Input.is_action_just_pressed("throw"):
+	if throw_unlocked and throw_cooldown_timer <= 0.0 and Input.is_action_just_pressed("throw"):
 		change_state(PlayerState.THROW)
 		return
 
