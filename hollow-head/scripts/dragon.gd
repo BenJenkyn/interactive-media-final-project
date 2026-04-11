@@ -116,8 +116,11 @@ func _physics_process(delta: float) -> void:
 			_process_idle(delta)
 
 		State.HIGH_DASH_ATTACK:
-			velocity = dash_velocity
-			velocity.y = 0.0
+			if high_dash_attack_sprite.frame >= big_flame_start_frame:
+				velocity = dash_velocity
+				velocity.y = 0.0
+			else:
+				velocity = Vector2.ZERO
 			_update_attack_boxes_and_flame()
 
 		State.CLOSE_ATTACK:
