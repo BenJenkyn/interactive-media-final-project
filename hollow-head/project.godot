@@ -20,6 +20,10 @@ config/icon="res://icon.svg"
 level_state="*res://scripts/level_state.gd"
 player_state="*res://scripts/player_state.gd"
 
+[display]
+
+window/stretch/mode="canvas_items"
+
 [input]
 
 move_left={
