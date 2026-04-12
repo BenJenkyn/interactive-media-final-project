@@ -21,8 +21,8 @@ Tips:
 ## Controls
 
 - Move: A / D or Left / Right Arrow Keys
-- Jump: W or Up Arrow
-- Melee Attack: Space
+- Jump: W, Up Arrow or Space
+- Melee Attack: e or f
 - Throw Projectile (when unlocked): Q
 - Dodge (when unlocked): Shift
 - Pause: P or Esc
