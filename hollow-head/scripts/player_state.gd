@@ -15,14 +15,15 @@ var attack_damage_bonus: int = 0
 
 var victory_count: int = 0
 
-func reset_run() -> void:
+func reset_run(reset_victories: bool = false) -> void:
 	max_health = base_max_health
 	current_health = max_health
 	throw_unlocked = false
 	dodge_unlocked = false
 	move_speed_bonus = 0.0
 	attack_damage_bonus = 0
-	victory_count = 0
+	if reset_victories:
+		victory_count = 0
 	health_changed.emit(current_health, max_health)
 
 func reset_health() -> void:
